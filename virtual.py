@@ -1,21 +1,21 @@
 from pieces import pieces
 from board import board
 
-def pressAdd(piece, rote=0, column='center'):
+def pressAdd(piece, rote=0):
     pieceToAdd = pieces[piece][rote]
     rowPiece = len(pieceToAdd)
+
     columnPiece = len(pieceToAdd[0])
-    # Determinar la columna inicial según la indicación
-    #if column == 'left':
-    #   column_initial = 0
-    #elif column == 'right':
-    #    column_initial = len(boardMaster[0]) - columnPiece
-    #else:  # Por defecto, centrar la pieza
-    #    column_initial = (len(boardMaster[0]) - columnPiece) // 2
-    columnInitial = len(board[0])- columnPiece
-    #index = moveInBoard(funInit=moveToLeft(initial=columnInitial))
-    #print(index)
-    detectedCollition(initial=columnInitial, final=columnPiece)
+    columnInitial = (len(board[0]) - columnPiece) //2
+    columnFinal = columnInitial + columnPiece
+    
+    print ('piece initial: ', columnInitial)
+    print ('piece final: ', columnFinal)
+    print('len piece: ',columnPiece)
+    index = moveInBoard(funInit=moveToLeft(times=4,initial=columnInitial),funFin=moveToRight(times=9,fin=columnFinal))
+    row = detectedCollition(initial=index, final=columnPiece)
+    print("se decide entonces apilarla en la fila: {}".format(row))
+
 def moveInBoard(funInit=None, funFin=None):
     init = 0
     fin = 0
@@ -25,6 +25,7 @@ def moveInBoard(funInit=None, funFin=None):
 
     if funFin is not None:
         fin = funFin
+
     index = abs(init - fin)
     print('resultado bordL: {}'.format(init))
     print('resultado bordR: {}'.format(fin))
@@ -40,6 +41,7 @@ def moveToRight(times=1, init = 3, fin=6):
     indexFin = max(0, min(fin, 9))
     initial = max(0, min(indexInit + times, 9))
     final = max(0, min(indexFin + times, 9))
+    
     if final == 9 and len(range(initial, final)) != len(range(init, fin)):
         initial = initial - len(range(init, fin))
 
@@ -47,24 +49,25 @@ def moveToRight(times=1, init = 3, fin=6):
 
 def detectedCollition(row=-1, initial = 3,final = 6):
     print('row: ',row)
-    print('initial: ',initial)
-    print('final: ',final)
-    print('range: ',board[row][initial:final+3])
-    if 1 in (board[row][initial:final+3]):
+    print('detect initial: ',initial)
+    print('detect final: ',final+initial)
+    print('detect range: ',board[row][initial:initial+final])
+    
+    if 1 in (board[row][initial:initial+final]):
         print("se detectó una colision en la fila: {}".format(row))
-        detectedCollition(row=row-1,initial=initial,final=final)
-        return True
+        return detectedCollition(row=row-1,initial = initial,final = final)
     else:
-        return False
-pressAdd(piece='l')
+        return row
+
+pressAdd(piece='l',rote=1)
 
 
 for fila in board:
     print(fila)
 
-initial = moveToLeft(times=4)
-print('resultado de izquierda: {}'.format(initial))
-initial = moveToRight(times = 9, init = initial,fin = 3)
-print("resultado de derecha: {}".format(initial))
-index = moveInBoard(funInit = moveToLeft(times=4), funFin = moveToRight(times=9))
-print("resultado board: {}".format(index))
+#initial = moveToLeft(times=4)
+#print('resultado de izquierda: {}'.format(initial))
+#initial = moveToRight(times = 9, init = initial,fin = 3)
+#print("resultado de derecha: {}".format(initial))
+#index = moveInBoard(funInit = moveToLeft(times=4), funFin = moveToRight(times=9))
+#print("resultado board: {}".format(index))
