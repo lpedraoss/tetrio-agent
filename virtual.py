@@ -1,10 +1,11 @@
 from pieces import pieces
 from board import board
 import time
+import numpy as np
 class Tetrio:
 
     def __init__(self):
-        self.board = board
+        self.board = np.zeros((20, 10), dtype=int)
         self.pieces = pieces
 
     def pressAdd(self,piece, rote=0):
@@ -23,7 +24,7 @@ class Tetrio:
                                 lenght= columnPiece)
 
         row = self.detectedCollition(initial=index, final=columnPiece)
-        row += 20
+        #row += 20
         print("se decide entonces apilarla en la fila: {}"
             .format(row))
         print("con el siguiente rango en columna: ({},{})"
@@ -82,20 +83,22 @@ class Tetrio:
     def addPiece(self, piece,row = 2, column = 5):
         height = len(piece)
         width = len(piece[0])
-        print('altura: ',height)
-        print('ancho',width)
+        print('altura de pieza: ',height)
+        print('ancho de pieza',width)
         for i in range(height):
             for j in range(width):
                 if  piece[i][j] == 1:
-                    self.board[row - i][+column + j] = 1
-                   
+                    self.board[row+i-height+1][column + j] = 1
     def showBoard(self):
         for i in self.board:
             print(i)
 
-
 tetrio = Tetrio()
-tetrio.pressAdd(piece='i',rote=0)
-tetrio.pressAdd(piece='s',rote=0)  
+
+def startGame():
+    for p in range(1):
+        tetrio.pressAdd(piece='l',rote=0)  
+        tetrio.pressAdd(piece='j',rote=2) 
+startGame()
 tetrio.showBoard()
 
