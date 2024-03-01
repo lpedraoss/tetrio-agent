@@ -12,7 +12,7 @@ class Tetrio:
         rowPiece = len(pieceToAdd)
 
         columnPiece = len(pieceToAdd[0])
-        columnInitial = (len(board[0]) - columnPiece) //2
+        columnInitial = (len(self.board[0]) - columnPiece) //2
         columnFinal = columnInitial + columnPiece
         columnFinal-=1
         print ('piece initial: ', columnInitial)
@@ -71,9 +71,9 @@ class Tetrio:
         print('row: ',row)
         print('detect initial: ',initial)
         print('detect final: ',final+initial)
-        print('detect range: ',board[row][initial:initial+final])
+        print('detect range: ',self.board[row][initial:initial+final])
         
-        if 1 in (board[row][initial:initial+final]):
+        if 1 in (self.board[row][initial:initial+final]):
             print("se detectó una colision en la fila: {}".format(row))
             return self.detectedCollition(row=row-1,initial = initial,final = final)
         else:
