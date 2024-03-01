@@ -1,37 +1,43 @@
 from pieces import pieces
-from board import board
 import time
 import numpy as np
+
+
 class Tetrio:
 
     def __init__(self):
         self.board = np.zeros((20, 10), dtype=int)
         self.pieces = pieces
+        self.piece = None
+        self.height = None
+        self.width = None
 
-    def pressAdd(self,piece, rote=0):
-        pieceToAdd = self.pieces[piece][rote]
-        rowPiece = len(pieceToAdd)
+    def pressAdd(self, piece, rote=0):
+        self.piece = self.pieces[piece][rote]
+        self.height = len(self.piece)
+        self.width = len(self.piece[0])
+        columnInitial = (len(self.board[0]) - self.width) // 2
 
-        columnPiece = len(pieceToAdd[0])
-        columnInitial = (len(self.board[0]) - columnPiece) //2
-        columnFinal = columnInitial + columnPiece
-        columnFinal-=1
-        print ('piece initial: ', columnInitial)
-        print ('piece final: ', columnFinal)
-        print('len piece: ',columnPiece)
-        index = self.moveInBoard(funInit = self.moveToLeft(times = 2,initial = columnInitial),
-                                funFin = self.moveToRight(times=2,init=columnInitial,fin=columnFinal),
-                                lenght= columnPiece)
+        print("piece initial: ", columnInitial)
+        print("piece final: ", columnInitial + self.width - 1)
+        print("len piece: ", self.width)
 
-        row = self.detectedCollition(initial=index, final=columnPiece)
-        #row += 20
-        print("se decide entonces apilarla en la fila: {}"
-            .format(row))
-        print("con el siguiente rango en columna: ({},{})"
-            .format(index,index+columnPiece-1))
-        self.addPiece(piece=pieceToAdd,row=row,column=index)
+        column = self.moveInBoard(
+            funInit=self.moveToLeft(times=2, initial=columnInitial),
+            funFin=self.moveToRight(times=2, initial=columnInitial),
+        )
 
-    def moveInBoard(self,funInit=None, funFin=None,lenght=3):
+        row = self.detectedCollition(initial=column)
+        # row += 20
+        print("se decide entonces apilarla en la fila: {}".format(row))
+        print(
+            "con el siguiente rango en columna: ({},{})".format(
+                column, column + self.width - 1
+            )
+        )
+        self.addPiece(row=row, column=column)
+
+    def moveInBoard(self, funInit=None, funFin=None):
         init = 0
         fin = 0
 
@@ -42,63 +48,76 @@ class Tetrio:
             fin = funFin
 
         index = abs(init - fin)
-        if(lenght >= 3):
-            index-=1
-        print('resultado bordL: {}'.format(init))
-        print('resultado bordR: {}'.format(fin))
+        if self.width  >= 3:
+            index -= 1
+        print("resultado bordL: {}".format(init))
+        print("resultado bordR: {}".format(fin))
 
-        print('resultado bordI: {}'.format(index))
-        
+        print("resultado bordI: {}".format(index))
+
         return index
 
-    def moveToLeft(self,times = 1, initial = 2):
-        initial = max(0, initial - times)
-        print("esto es de left: ",initial)
+    def moveToLeft(self, times=1, initial=2):
+        initial = max(
+            0,
+            initial - times,
+        )
+        print("esto es de left: ", initial)
         return initial
 
-    def moveToRight(self,times=1, init = 2, fin = 5):
-        indexInit = max(0, min(init, 9))
-        indexFin = max(0, min(fin, 9))
-        initial = max(0, min(indexInit + times, 9))
-        final = max(0, min(indexFin + times, 9))
-        
-        if final == 9 and len(range(initial, final)) != len(range(init, fin)):
-            initial = initial - len(range(init, fin))
+    def moveToRight(self, times=1, initial=2):
+        # Asegurarse de que start esté en el rango [0, 9]
+        start = max(0, min(initial, 9))
+        # Asegurarse de que end esté en el rango [0, 9]
+        end = max(
+            0,
+            min(initial + self.width-1, 9),
+        )
+        # Calcular el nuevo valor teniendo en cuenta times
+        index = max(0, min(start + times, 9))
+        final = max(0, min(end + times, 9))
 
-        print("esto es de right: ",initial)
-        return initial
+        if final == 9 and len(range(index, final)) != len(
+            range(initial, initial + self.width-1)
+        ):
+            index -= len(range(initial, self.width-1 ))
 
-    def detectedCollition(self, row=-1, initial = 3,final = 6):
-        print('row: ',row)
-        print('detect initial: ',initial)
-        print('detect final: ',final+initial)
-        print('detect range: ',self.board[row][initial:initial+final])
-        
-        if 1 in (self.board[row][initial:initial+final]):
+        print("esto es de right: ", index)
+        return index
+
+    def detectedCollition(self, row=-1, initial=3):
+        print("row: ", row)
+        print("detect initial: ", initial)
+        print("detect final: ", self.width-1 + initial)
+        print("detect range: ", self.board[row][initial : initial + self.width-1])
+
+        if 1 in (self.board[row][initial : initial + self.width-1]):
             print("se detectó una colision en la fila: {}".format(row))
-            return self.detectedCollition(row=row-1,initial = initial,final = final)
+            return self.detectedCollition(row=row - 1, initial=initial)
         else:
             return row
 
-    def addPiece(self, piece,row = 2, column = 5):
-        height = len(piece)
-        width = len(piece[0])
-        print('altura de pieza: ',height)
-        print('ancho de pieza',width)
-        for i in range(height):
-            for j in range(width):
-                if  piece[i][j] == 1:
-                    self.board[row+i-height+1][column + j] = 1
+    def addPiece(self, row=2, column=5):
+
+        print("altura de pieza: ", self.height)
+        print("ancho de pieza", self.width)
+        for i in range(self.height):
+            for j in range(self.width):
+                if self.piece[i][j] == 1:
+                    self.board[row + i - self.height + 1][column + j] = 1
+
     def showBoard(self):
         for i in self.board:
             print(i)
 
+
 tetrio = Tetrio()
+
 
 def startGame():
     for p in range(1):
-        tetrio.pressAdd(piece='l',rote=0)  
-        tetrio.pressAdd(piece='j',rote=2) 
+        tetrio.pressAdd(piece="i", rote=0)
+
+
 startGame()
 tetrio.showBoard()
-
