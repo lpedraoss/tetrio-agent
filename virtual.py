@@ -27,7 +27,7 @@ class Tetrio:
             funFin=self.moveToRight(times=2, initial=columnInitial),
         )
 
-        row = self.detectedCollition(initial=column)
+        row = self.detectCollision(initial=column)
         # row += 20
         print("se decide entonces apilarla en la fila: {}".format(row))
         print(
@@ -85,17 +85,21 @@ class Tetrio:
         print("esto es de right: ", index)
         return index
 
-    def detectedCollition(self, row=-1, initial=3):
+    def detectCollision(self, row=-1, initial=3, column=0):
         print("row: ", row)
         print("detect initial: ", initial)
         print("detect final: ", self.width-1 + initial)
         print("detect range: ", self.board[row][initial : initial + self.width-1])
 
-        if 1 in (self.board[row][initial : initial + self.width-1]):
-            print("se detectó una colision en la fila: {}".format(row))
-            return self.detectedCollition(row=row - 1, initial=initial)
-        else:
-            return row
+        if column <= self.width - 1:
+            if 0 == self.piece[0][column] and 1 == self.board[row][initial + column]:
+                row = self.detectCollision(row = row, initial=initial, column = column + 1)
+            elif 1 == self.piece[0][column] and 1 == self.board[row][initial + column]:
+                print("se detectó una colisión en la fila: {}".format(row))
+                row = self.detectCollision(row = row - 1, initial = initial, column = 0)
+        
+        return row
+
 
     def addPiece(self, row=2, column=5):
 
@@ -116,7 +120,8 @@ tetrio = Tetrio()
 
 def startGame():
     for p in range(1):
-        tetrio.pressAdd(piece="i", rote=0)
+        tetrio.pressAdd(piece="l", rote=1)
+        tetrio.pressAdd(piece="i", rote=1)
 
 
 startGame()
