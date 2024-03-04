@@ -18,9 +18,6 @@ class Tetrio:
         self.width = len(self.piece[0])
         columnInitial = (len(self.board[0]) - self.width) // 2
 
-        print("piece initial: ", columnInitial)
-        print("piece final: ", columnInitial + self.width - 1)
-        print("len piece: ", self.width)
 
         column = self.moveInBoard(
             funInit=self.moveToLeft(times=2, initial=columnInitial),
@@ -50,11 +47,6 @@ class Tetrio:
         index = abs(init - fin)
         if self.width  >= 3:
             index -= 1
-        print("resultado bordL: {}".format(init))
-        print("resultado bordR: {}".format(fin))
-
-        print("resultado bordI: {}".format(index))
-
         return index
 
     def moveToLeft(self, times=1, initial=2):
@@ -86,9 +78,7 @@ class Tetrio:
         return index
 
     def detectCollision(self, row=-1, initial=3, column=0):
-        print("row: ", row)
-        print("detect initial: ", initial)
-        print("detect final: ", self.width-1 + initial)
+
         print("detect range: ", self.board[row][initial : initial + self.width-1])
 
         if column <= self.width - 1:
@@ -120,9 +110,7 @@ tetrio = Tetrio()
 
 def startGame():
     for p in range(1):
-        tetrio.pressAdd(piece="l", rote=1)
-        tetrio.pressAdd(piece="i", rote=1)
-
+        tetrio.pressAdd(piece="z", rote=0)
 
 startGame()
 tetrio.showBoard()
