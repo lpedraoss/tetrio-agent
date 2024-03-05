@@ -78,21 +78,19 @@ class Tetrio:
         return index
 
     def detectCollision(self, row=-1, initial=3, column=0):
-
         print("detect range: ", self.board[row][initial : initial + self.width-1])
 
         if column <= self.width - 1:
-            if 0 == self.piece[0][column] and 1 == self.board[row][initial + column]:
-                row = self.detectCollision(row = row, initial=initial, column = column + 1)
-            elif 1 == self.piece[0][column] and 1 == self.board[row][initial + column]:
-                print("se detectó una colisión en la fila: {}".format(row))
-                row = self.detectCollision(row = row - 1, initial = initial, column = 0)
         
+            index = row 
+            collision = any(self.board[i][initial+column] == 1 for i in range(index, -len(self.board)-1, -1))
+            if not collision:
+                row = self.detectCollision(row=row, initial=initial, column=column + 1)
+            else:
+                row = self.detectCollision(row=row - 1, initial=initial, column=0)
         return row
 
-
     def addPiece(self, row=2, column=5):
-
         print("altura de pieza: ", self.height)
         print("ancho de pieza", self.width)
         for i in range(self.height):
@@ -110,7 +108,9 @@ tetrio = Tetrio()
 
 def startGame():
     for p in range(1):
-        tetrio.pressAdd(piece="z", rote=0)
+        tetrio.pressAdd(piece="l", rote=0)
+        tetrio.pressAdd(piece="z", rote=1)
+        tetrio.pressAdd(piece="o", rote=0)
 
 startGame()
 tetrio.showBoard()
