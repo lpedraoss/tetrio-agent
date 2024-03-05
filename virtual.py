@@ -78,14 +78,21 @@ class Tetrio:
         return index
 
     def detectCollision(self, row=-1, initial=3, column=0):
-        print("detect range: ", self.board[row][initial : initial + self.width-1])
 
-        if column <= self.width - 1:
-        
-            index = row 
+        if column <= (self.width - 1) and row > (-len(self.board)+1):
+            print("detect range: ", self.board[row][initial : initial + self.width-1])
+            index = row -1
             collision = any(self.board[i][initial+column] == 1 for i in range(index, -len(self.board)-1, -1))
+            isPiece = self.piece[self.height-1][column] == 0 and self.board[row][column+initial] == 1
+            isBoard = self.piece[self.height-1][column]==1 and self.board[row][column+initial]==0
+            both = self.piece[self.height-1][column] == 0 and self.board[row][column+initial]==0
+            isHole = isPiece or isBoard or both
+            
             if not collision:
-                row = self.detectCollision(row=row, initial=initial, column=column + 1)
+                if isHole:
+                    row = self.detectCollision(row=row, initial=initial, column=column + 1)
+                else:
+                    row = self.detectCollision(row=row - 1, initial=initial, column=0)
             else:
                 row = self.detectCollision(row=row - 1, initial=initial, column=0)
         return row
@@ -107,10 +114,11 @@ tetrio = Tetrio()
 
 
 def startGame():
-    for p in range(1):
-        tetrio.pressAdd(piece="l", rote=0)
-        tetrio.pressAdd(piece="z", rote=1)
+    for p in range(2):
+        tetrio.pressAdd(piece="l", rote=1)
+        tetrio.pressAdd(piece="i")
         tetrio.pressAdd(piece="o", rote=0)
+        tetrio.pressAdd(piece="z", rote=1)
 
 startGame()
 tetrio.showBoard()
