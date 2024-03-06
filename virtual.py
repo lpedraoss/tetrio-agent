@@ -1,4 +1,5 @@
 from pieces import pieces
+#from board import board
 import time
 import numpy as np
 
@@ -7,13 +8,13 @@ class Tetrio:
 
     def __init__(self):
         self.board = np.zeros((20, 10), dtype=int)
-        self.pieces = pieces
+        #self.board = board
         self.piece = None
         self.height = None
         self.width = None
 
     def pressAdd(self, piece, rote=0):
-        self.piece = self.pieces[piece][rote]
+        self.piece = pieces[piece][rote]
         self.height = len(self.piece)
         self.width = len(self.piece[0])
         columnInitial = (len(self.board[0]) - self.width) // 2
@@ -33,7 +34,8 @@ class Tetrio:
             )
         )
         self.addPiece(row=row, column=column)
-
+        self.checkLines()
+        print(len(self.board))
     def moveInBoard(self, funInit=None, funFin=None):
         init = 0
         fin = 0
@@ -105,6 +107,17 @@ class Tetrio:
                 if self.piece[i][j] == 1:
                     self.board[row + i - self.height + 1][column + j] = 1
 
+
+    def checkLines(self):
+        # Revisa si alguna fila está completamente llena de 1 y haz "pop"
+        full_rows = [idx for idx, row in enumerate(self.board) if all(cell == 1 for cell in row)]
+        for full_row in full_rows:
+            self.cleanLine(full_row)
+
+    def cleanLine(self, row):
+        self.board = np.delete(self.board, row, axis=0)
+        new_row = np.zeros((1, self.board.shape[1]), dtype=int)
+        self.board = np.insert(self.board, 0, new_row, axis=0)
     def showBoard(self):
         for i in self.board:
             print(i)
@@ -114,11 +127,11 @@ tetrio = Tetrio()
 
 
 def startGame():
-    for p in range(2):
-        tetrio.pressAdd(piece="l", rote=1)
-        tetrio.pressAdd(piece="i")
-        tetrio.pressAdd(piece="o", rote=0)
-        tetrio.pressAdd(piece="z", rote=1)
+    for p in range(1):
+        #tetrio.pressAdd(piece="l", rote=1)
+        tetrio.pressAdd(piece="i",rote=1)
+        tetrio.pressAdd(piece="t", rote=2)
+        # tetrio.pressAdd(piece="z", rote=1)
 
 startGame()
 tetrio.showBoard()
