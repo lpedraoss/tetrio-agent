@@ -1,4 +1,5 @@
 from pieces import pieces
+from rotation import checkRotation
 #from board import board
 import time
 import numpy as np
@@ -9,15 +10,16 @@ class Tetrio:
     def __init__(self):
         self.board = np.zeros((20, 10), dtype=int)
         #self.board = board
+        self.checkRotation = checkRotation
         self.piece = None
         self.height = None
         self.width = None
 
-    def pressAdd(self, piece, rote=0):
-        self.piece = pieces[piece][rote]
+    def pressAdd(self, piece, rotate=0):
+        self.piece = pieces[piece][rotate]
         self.height = len(self.piece)
         self.width = len(self.piece[0]) 
-        columnInitial = self.checkColumn(piece=piece,rote=rote)
+        columnInitial = self.checkRotation(piece=piece,rotate=rotate)
         column = self.moveInBoard(
             function=self.moveToLeft(times=0, initial=columnInitial),
         )
@@ -36,41 +38,7 @@ class Tetrio:
 
         print(len(self.board), heuristic)
 
-    def checkColumn(self,piece,rote=0):
-        index = 3
-        if piece == "l":
-            if rote == 0 or rote == 2 or rote ==3:
-                index = 3
-            elif rote == 1:
-                index = 4
-        elif piece == 'j':
-            if rote == 0 or rote == 2 or rote == 3:
-                index = 3
-            elif rote == 1:
-                index = 4
-        elif piece == 'z':
-            if rote == 0:
-                index = 3
-            elif rote == 1:
-                index = 4
-        elif piece == 's':
-            if rote == 0:
-                index = 3
-            elif rote == 1:
-                index = 4
-        elif piece == 't':
-            if rote == 0 or rote == 2 or rote == 3:
-                index = 3
-            elif rote == 1:
-                index = 4
-        elif piece == 'o':
-            index = 4
-        elif piece == 'i':
-            if rote == 0:
-                index = 3
-            elif rote == 1:
-                index = 5
-        return index
+   
                 
     def moveInBoard(self,function=None):
         index = 0
@@ -156,10 +124,8 @@ tetrio = Tetrio()
 
 def startGame():
     for p in range(1):
-        tetrio.pressAdd(piece="i", rote=1)
-        tetrio.pressAdd(piece="z",rote=1)
-        tetrio.pressAdd(piece="t", rote=2)
-        tetrio.pressAdd(piece="s", rote=1)
+        tetrio.pressAdd(piece="i", rotate=0)
+
 
 startGame()
 tetrio.showBoard()
