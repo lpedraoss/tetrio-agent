@@ -2,7 +2,7 @@ from pieces import pieces
 #from board import board
 import time
 import numpy as np
-
+from heuristic import calculate_heuristics
 
 class Tetrio:
 
@@ -32,7 +32,9 @@ class Tetrio:
         )
         self.addPiece(row=row, column=column)
         self.checkLines()
-        print(len(self.board))
+        heuristic = calculate_heuristics(self.board)
+
+        print(len(self.board), heuristic)
 
     def checkColumn(self,piece,rote=0):
         index = 3
