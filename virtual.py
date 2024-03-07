@@ -24,8 +24,9 @@ class Tetrio:
         self.height = len(self.piece)
         self.width = len(self.piece[0]) 
         columnInitial = self.checkRotation(piece=piece,rotate=rotate)
-        column = self.moveInBoard(times=2, initial=columnInitial,direction='left')
-
+        column = self.moveInBoard(times=5, initial=columnInitial,direction='right')
+        moves = self.generateMoves(initial=columnInitial,piece=piece)
+        print('moves: ------- ',moves)
         row = self.detectCollision(initial=column)
         print("se decide entonces apilarla en la fila: {}".format(row))
         print(
@@ -39,7 +40,11 @@ class Tetrio:
 
         print(len(self.board), heuristic)
                 
-    def moveInBoard(self, times=0,initial=2,direction = None):
+    def moveInBoard(self, times=0,initial=2,direction = None,piece = None):
+        if piece == None:
+            width = self.width 
+        else:
+            width = len(piece[0]) 
         index = 0
         if direction == None or direction == 'center':
             index = initial
@@ -55,21 +60,37 @@ class Tetrio:
             # Asegurarse de que end esté en el rango [0, 9]
             end = max(
                 0,
-                min(initial + self.width-1, 9),
+                min(initial + width-1, 9),
             )
             # Calcular el nuevo valor teniendo en cuenta times
             index = max(0, min(start + times, 9))
             final = max(0, min(end + times, 9))
 
             if final >= 9 and len(range(index, final)) != len(
-                range(initial, initial + self.width-1)
+                range(initial, initial + width-1)
             ):
                 final = 9
-                index -= len(range(initial, self.width-1 ))
+                index -= len(range(initial, initial+ width-1 ))
 
             print("esto es de right: ", index)
         return index
+    def generateMoves(self,piece,initial=3):
+        moves = []
+        pieceToAdd = pieces[piece]
+        times = (len(self.board[0]))-(initial+self.width-2)
+        for rot in range(self.rotations):
+            for direction in ['left', 'center', 'right']:
+                if direction == 'center':
+                    t = 0
+                    move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
+                    moves.append((piece, rot, direction, t, move))
+                else:
+                    for t in range(1,times-1):
+                    
+                        move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
+                        moves.append((piece, rot, direction, t, move))
 
+        return moves
 
     def detectCollision(self, row=-1, initial=3, column=0):
 
@@ -125,4 +146,5 @@ def startGame():
 
 
 startGame()
+
 tetrio.showBoard()
