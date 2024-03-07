@@ -14,18 +14,19 @@ class Tetrio:
         self.piece = None
         self.height = None
         self.width = None
+        self.rotations = None
 
-    def pressAdd(self, piece, rotate=0):
+    def pressAdd(self, piece):
+        
+        self.rotations = len(pieces[piece]) 
+        rotate = self.rotations-1
         self.piece = pieces[piece][rotate]
         self.height = len(self.piece)
         self.width = len(self.piece[0]) 
         columnInitial = self.checkRotation(piece=piece,rotate=rotate)
-        column = self.moveInBoard(
-            function=self.moveToLeft(times=0, initial=columnInitial),
-        )
+        column = self.moveInBoard(times=2, initial=columnInitial,direction='left')
 
         row = self.detectCollision(initial=column)
-        # row += 20
         print("se decide entonces apilarla en la fila: {}".format(row))
         print(
             "con el siguiente rango en columna: ({},{})".format(
@@ -37,42 +38,38 @@ class Tetrio:
         heuristic = calculate_heuristics(self.board)
 
         print(len(self.board), heuristic)
-
-   
                 
-    def moveInBoard(self,function=None):
+    def moveInBoard(self, times=0,initial=2,direction = None):
         index = 0
-        if function != None:
-            index = function;
-        return function;
-
-    def moveToLeft(self, times=1, initial=2):
-        initial = max(
+        if direction == None or direction == 'center':
+            index = initial
+        elif direction == 'left':
+            index = max(
             0,
             initial - times,
-        )
-        print("esto es de left: ", initial)
-        return initial
+            )
+            print("esto es de left: ", index)
+        elif direction == 'right':
+            # Asegurarse de que start esté en el rango [0, 9]
+            start = max(0, min(initial, 9))
+            # Asegurarse de que end esté en el rango [0, 9]
+            end = max(
+                0,
+                min(initial + self.width-1, 9),
+            )
+            # Calcular el nuevo valor teniendo en cuenta times
+            index = max(0, min(start + times, 9))
+            final = max(0, min(end + times, 9))
 
-    def moveToRight(self, times=1, initial=2):
-        # Asegurarse de que start esté en el rango [0, 9]
-        start = max(0, min(initial, 9))
-        # Asegurarse de que end esté en el rango [0, 9]
-        end = max(
-            0,
-            min(initial + self.width-1, 9),
-        )
-        # Calcular el nuevo valor teniendo en cuenta times
-        index = max(0, min(start + times, 9))
-        final = max(0, min(end + times, 9))
+            if final >= 9 and len(range(index, final)) != len(
+                range(initial, initial + self.width-1)
+            ):
+                final = 9
+                index -= len(range(initial, self.width-1 ))
 
-        if final == 9 and len(range(index, final)) != len(
-            range(initial, initial + self.width-1)
-        ):
-            index -= len(range(initial, self.width-1 ))
-
-        print("esto es de right: ", index)
+            print("esto es de right: ", index)
         return index
+
 
     def detectCollision(self, row=-1, initial=3, column=0):
 
@@ -124,7 +121,7 @@ tetrio = Tetrio()
 
 def startGame():
     for p in range(1):
-        tetrio.pressAdd(piece="i", rotate=0)
+        tetrio.pressAdd(piece="t")
 
 
 startGame()
