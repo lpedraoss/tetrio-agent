@@ -8,18 +8,26 @@ from heuristic import calculate_heuristics
 class Tetrio:
 
     def __init__(self):
-        self.board = np.zeros((20, 10), dtype=int)
+        self.board = np.zeros((5, 10), dtype=int)
         #self.board = board
         self.checkRotation = checkRotation
         self.piece = None
         self.height = None
+        self.current_height = 4
+        self.MAX_HEIGHT = 20
         self.width = None
         self.rotations = None
+    def increase_height(self, row):
+        if (row - self.height) < -self.current_height:
+            increaseToAdd = min(4, self.MAX_HEIGHT-1 - self.current_height)
+            increase = np.zeros((increaseToAdd,self.board.shape[1]),dtype = int)
+            self.board = np.vstack((increase,self.board))
+            self.current_height += increaseToAdd
 
     def pressAdd(self, piece):
         
         self.rotations = len(pieces[piece]) 
-        rotate = self.rotations-1
+        rotate = self.rotations-2
         self.piece = pieces[piece][rotate]
         self.height = len(self.piece)
         self.width = len(self.piece[0]) 
@@ -28,6 +36,8 @@ class Tetrio:
         moves = self.generateMoves(initial=columnInitial,piece=piece)
         print('moves: ------- ',moves)
         row = self.detectCollision(initial=column)
+        self.increase_height(row)
+
         print("se decide entonces apilarla en la fila: {}".format(row))
         print(
             "con el siguiente rango en columna: ({},{})".format(
@@ -36,10 +46,10 @@ class Tetrio:
         )
         self.addPiece(row=row, column=column)
         self.checkLines()
-        heuristic = calculate_heuristics(self.board)
+        heuristic = calculate_heuristics(board = self.board,initial=column,final=column+self.width-1)
 
-        print(len(self.board), heuristic)
-                
+        print("altura heuristica: ", heuristic)
+
     def moveInBoard(self, times=0,initial=2,direction = None,piece = None):
         if piece == None:
             width = self.width 
@@ -89,7 +99,6 @@ class Tetrio:
                     
                         move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
                         moves.append((piece, rot, direction, t, move))
-
         return moves
 
     def detectCollision(self, row=-1, initial=3, column=0):
@@ -131,6 +140,7 @@ class Tetrio:
         self.board = np.delete(self.board, row, axis=0)
         new_row = np.zeros((1, self.board.shape[1]), dtype=int)
         self.board = np.insert(self.board, 0, new_row, axis=0)
+
         
     def showBoard(self):
         for i in self.board:
@@ -141,10 +151,11 @@ tetrio = Tetrio()
 
 
 def startGame():
-    for p in range(1):
-        tetrio.pressAdd(piece="t")
-
+    
+    for p in range(2):
+        tetrio.pressAdd(piece="l")
 
 startGame()
+
 
 tetrio.showBoard()
