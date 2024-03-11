@@ -39,6 +39,7 @@ def moveToLeft(steps=1):
 def moveToRight(steps=1):
     for _ in range(steps):
         py.press('right')
+
 def rotate90(steps=1):
     for _ in range(steps):
         py.press('up')

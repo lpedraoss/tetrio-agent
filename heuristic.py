@@ -23,11 +23,12 @@ def holes(board):
     return total_holes
 
 def calculate_heuristics(board,initial,final):
-    max_height_value = max_height(board,initial,final)
-    holes_value = holes(board)
+    max_height_value = max_height(board,initial,final)*0.7
+    holes_value = holes(board)*0.3
     max_height_normalized = (max_height_value - 1) / (20 - 1)  # Normalizar max_height
     holes_normalized = (holes_value - 0) / (20 * len(board[0]) - np.sum(board))  # Normalizar holes
-    score = (max_height_normalized * 0.9) + (holes_normalized * 0.1)
+    score = (max_height_normalized * 0.7) + (holes_normalized * 0.3)
+    
     return {
         'height': max_height_value,
         'holes':holes_value,
