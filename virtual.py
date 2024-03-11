@@ -16,23 +16,34 @@ class Tetrio:
         self.current_height = 4
         self.MAX_HEIGHT = 20
         self.width = None
-        self.rotations = None
-    def increase_height(self, row):
-        if (row - self.height) < -self.current_height:
-            increaseToAdd = min(4, self.MAX_HEIGHT-1 - self.current_height)
-            increase = np.zeros((increaseToAdd,self.board.shape[1]),dtype = int)
-            self.board = np.vstack((increase,self.board))
-            self.current_height += increaseToAdd
+        self.rotations = None  
+    def selectBestMove(self, moves):
+        # Evaluar cada movimiento usando la heurística y seleccionar el mejor
+        best_move = None
+        best_score = float('-inf')
 
-    def pressAdd(self, piece):
+        for move in moves:
+            piece, rot, direction, t, move_column = move
+            initial = move_column
+            final = move_column + len(pieces[piece][rot][0]) - 1
+            score = calculate_heuristics(self.board, initial, final)['score']
+
+            if score > best_score:
+                best_score = score
+                best_move = move
+
+        return best_move
+    def pressAdd(self, piece,times,rotation,dir):
         
         self.rotations = len(pieces[piece]) 
-        rotate = self.rotations-2
+        #rotate = self.rotations-2
+        rotate = rotation
         self.piece = pieces[piece][rotate]
         self.height = len(self.piece)
         self.width = len(self.piece[0]) 
         columnInitial = self.checkRotation(piece=piece,rotate=rotate)
-        column = self.moveInBoard(times=5, initial=columnInitial,direction='right')
+        #altura heuristica:  {'height': 2, 'holes': 2, 'score': 0.03353920515574651}
+        column = self.moveInBoard(times=times, initial=columnInitial,direction=dir)
         moves = self.generateMoves(initial=columnInitial,piece=piece)
         print('moves: ------- ',moves)
         row = self.detectCollision(initial=column)
@@ -49,7 +60,8 @@ class Tetrio:
         heuristic = calculate_heuristics(board = self.board,initial=column,final=column+self.width-1)
 
         print("altura heuristica: ", heuristic)
-
+        best_move = self.selectBestMove(moves)  # Nueva función para seleccionar el mejor movimiento
+        print(best_move, 'mejor jugada!!!!!!!!!!!')
     def moveInBoard(self, times=0,initial=2,direction = None,piece = None):
         if piece == None:
             width = self.width 
@@ -84,6 +96,7 @@ class Tetrio:
 
             print("esto es de right: ", index)
         return index
+
     def generateMoves(self,piece,initial=3):
         moves = []
         pieceToAdd = pieces[piece]
@@ -141,7 +154,13 @@ class Tetrio:
         new_row = np.zeros((1, self.board.shape[1]), dtype=int)
         self.board = np.insert(self.board, 0, new_row, axis=0)
 
-        
+    def increase_height(self, row):
+            if (row - self.height) < -self.current_height:
+                increaseToAdd = min(4, self.MAX_HEIGHT-1 - self.current_height)
+                increase = np.zeros((increaseToAdd,self.board.shape[1]),dtype = int)
+                self.board = np.vstack((increase,self.board))
+                self.current_height += increaseToAdd
+
     def showBoard(self):
         for i in self.board:
             print(i)
@@ -152,8 +171,11 @@ tetrio = Tetrio()
 
 def startGame():
     
-    for p in range(2):
-        tetrio.pressAdd(piece="l")
+    for p in range(1):
+        tetrio.pressAdd(piece="l",rotation=0,times=3,dir='center')
+        tetrio.pressAdd(piece="i",rotation=0,times=3,dir='right')
+        #tetrio.pressAdd(piece="i",rotation=1,times=0,dir='center')
+
 
 startGame()
 
