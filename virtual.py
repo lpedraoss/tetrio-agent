@@ -3,7 +3,7 @@ from rotation import checkRotation
 #from board import board
 import time
 import numpy as np
-from heuristic import calculate_heuristics
+from heuristic import Heuristic
 
 class Tetrio:
 
@@ -15,9 +15,10 @@ class Tetrio:
         self.height = None
         self.current_height = 4
         self.MAX_HEIGHT = 20
-        self.width = None
+        self.width = None 
         self.rotations = None  
-    def selectBestMove(self, moves):
+        self.heuristic = Heuristic()
+    def selectBestMove(self, moves,board):
         # Evaluar cada movimiento usando la heurística y seleccionar el mejor
         best_move = None
         best_score = float('inf')
@@ -26,15 +27,14 @@ class Tetrio:
             piece, rot, direction, t, move_column = move
             initial = move_column
             final = move_column + len(pieces[piece][rot][0]) - 1
-            score = calculate_heuristics(self.board, initial, final)['score']
+            score = self.heuristic.calculate_heuristics(board, initial, final)['score']
 
-            if score < best_score:
+            if score <= best_score:
                 best_score = score
                 best_move = move
 
         return best_move
     def pressAdd(self, piece,times,rotation,dir):
-        
         self.rotations = len(pieces[piece]) 
         #rotate = self.rotations-2
         rotate = rotation
@@ -46,6 +46,8 @@ class Tetrio:
         column = self.moveInBoard(times=times, initial=columnInitial,direction=dir)
         moves = self.generateMoves(initial=columnInitial,piece=piece)
         print('moves: ------- ',moves)
+        best_move = self.selectBestMove(moves,board= self.board)  # Nueva función para seleccionar el mejor movimiento
+        print(best_move, 'mejor jugada!!!!!!!!!!!')
         row = self.detectCollision(initial=column)
         self.increase_height(row)
 
@@ -55,13 +57,12 @@ class Tetrio:
                 column, column + self.width - 1
             )
         )
-        best_move = self.selectBestMove(moves)  # Nueva función para seleccionar el mejor movimiento
-        print(best_move, 'mejor jugada!!!!!!!!!!!')
+      
         self.addPiece(row=row, column=column)
-        self.checkLines()
-        heuristic = calculate_heuristics(board = self.board,initial=column,final=column+self.width-1)
-
+        heuristic = self.heuristic.calculate_heuristics(board = self.board,initial=column,final=column+self.width-1)
         print("altura heuristica: ", heuristic)
+        self.checkLines()
+        
 
     def moveInBoard(self, times=0,initial=2,direction = None,piece = None):
         if piece == None:
@@ -173,9 +174,12 @@ tetrio = Tetrio()
 def startGame():
     
     for p in range(1):
-        tetrio.pressAdd(piece="l",rotation=0,times=1,dir='left')
-        tetrio.pressAdd(piece="i",rotation=0,times=3,dir='right')
-        #tetrio.pressAdd(piece="i",rotation=1,times=0,dir='center')
+        tetrio.pressAdd(piece="l",rotation=0,times=4,dir='right')
+        #tetrio.pressAdd(piece="i",rotation=0,times=2,dir='right')
+        #tetrio.pressAdd(piece="l",rotation=1,times=4,dir='left')
+        #tetrio.pressAdd(piece="t",rotation=0,times=2,dir='left')
+        #tetrio.pressAdd(piece="o",rotation=0,times=1,dir='right')
+        #tetrio.pressAdd(piece="s",rotation=0,times=4,dir='right')
 
 
 startGame()
