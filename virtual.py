@@ -124,7 +124,7 @@ class Tetrio:
         moves = []
         pieceToAdd = pieces[piece]
         #times = (len(self.board[0]))-(initial+self.width-2)
-        self.rotations = len(pieceToAdd)-1
+        self.rotations = len(pieceToAdd)
         for rot in range(self.rotations):
             initial = self.checkRotation(piece=piece,rotate=rot)
             width = len(pieceToAdd[rot])-1
@@ -187,7 +187,7 @@ def startGame():
         #tetrio.pressAdd(piece="t",rotation=0,times=2,dir='left')
         #tetrio.pressAdd(piece="o",rotation=0,times=1,dir='right')
         #tetrio.pressAdd(piece="s",rotation=0,times=4,dir='right')
-    print(tetrio.generateMoves(piece="l"),'esto es otra vuelta!!!!!!!!!!!!!!!')
+    print(tetrio.generateMoves(piece="o"),'esto es otra vuelta!!!!!!!!!!!!!!!')
 
 startGame()
 
