@@ -43,7 +43,7 @@ class Heuristic:
         #max_height_normalized = (max_height_value - 1) / (20 - 1)  # Normalizar max_height
         #holes_normalized = (holes_value - 0) / (20 * len(board[0]) - np.sum(board))  # Normalizar holes
         #lines_normalized = (lines - 0) / (20 - 0)  # Normalizar lines
-        score =  (max_height_value * 0.2) + (holes_value * 0.3)
+        score =  (max_height_value * 0.65) + (holes_value * 0.35)
         
         return {
             'height': max_height_value,
