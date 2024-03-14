@@ -211,7 +211,7 @@ class Tetrio:
             for i in self.board_test:
                 print(i)
     def startGame(self):
-        for p in range(2):
+        for p in range(1):
             move = self.predictMove(piece='o')
             piece, rot, direction, t, move_column = move
             self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
@@ -244,6 +244,20 @@ class Tetrio:
             self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
             print('La mejor jugada es!!!!!!!!!!!!!!!', move)
             
+            move = self.predictMove(piece='l')
+            piece, rot, direction, t, move_column = move
+            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
+            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
+
+            move = self.predictMove(piece='s')
+            piece, rot, direction, t, move_column = move
+            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
+            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
+
+            move = self.predictMove(piece='z')
+            piece, rot, direction, t, move_column = move
+            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
+            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
         self.showBoard()
         print(len(self.board))
 
