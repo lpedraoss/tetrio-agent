@@ -221,43 +221,17 @@ class Tetrio:
             piece, rot, direction, t, move_column = move
             self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
             print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-            
 
             move = self.predictMove(piece='t')
             piece, rot, direction, t, move_column = move
             self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
             print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-            
-            
-            move = self.predictMove(piece='z')
-            piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
 
             move = self.predictMove(piece='s')
             piece, rot, direction, t, move_column = move
             self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
             print('La mejor jugada es!!!!!!!!!!!!!!!', move)
 
-            move = self.predictMove(piece='o')
-            piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-            
-            move = self.predictMove(piece='l')
-            piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-
-            move = self.predictMove(piece='s')
-            piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-
-            move = self.predictMove(piece='z')
-            piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
         self.showBoard()
         print(len(self.board))
 
