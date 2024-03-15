@@ -141,7 +141,7 @@ class Tetrio:
             score = self.heuristic.calculate_heuristics(self.board_test, initial, final)['score']
             self.board_test = None
 
-            if score < best_score:
+            if score <= best_score:
                 best_score = score
                 best_move = move
         return best_move
@@ -211,27 +211,18 @@ class Tetrio:
             for i in self.board_test:
                 print(i)
     def startGame(self):
-        for p in range(1):
-            move = self.predictMove(piece='o')
+        while True:
+            piece = input("Ingresa la próxima pieza ('i', 'o', etc.): ")
+            if piece.lower() == 'exit':
+                break  # Salir del bucle si se ingresa 'exit'
+            
+            # Obtener la mejor jugada para la pieza ingresada
+            move = self.predictMove(piece=piece)
             piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-
-            move = self.predictMove(piece='i')
-            piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-
-            move = self.predictMove(piece='t')
-            piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-
-            move = self.predictMove(piece='s')
-            piece, rot, direction, t, move_column = move
-            self.pressAdd(piece=piece,rotation=rot,dir=direction,times=t)
-            print('La mejor jugada es!!!!!!!!!!!!!!!', move)
-
+            
+            # Realizar la jugada
+            self.pressAdd(piece=piece, rotation=rot, dir=direction, times=t)
+            print('La mejor jugada es:', move)           
         self.showBoard()
         print(len(self.board))
 
