@@ -2,3 +2,4 @@ __pycache__/
 prox
 board.py
 heuristic.p
+detect_pixel.py

@@ -1,4 +1,4 @@
-from pieces import pieces
+from pieces import pieces,colores_tetris
 from rotation import checkRotation
 #from board import board
 import time
@@ -20,7 +20,7 @@ class Tetrio:
         self.width = None 
         self.rotations = None  
         self.heuristic = Heuristic()
-
+        self.colores_tetris = colores_tetris  # Store the colores_tetris dictionary
 
     def moveInBoard(self, times=0,initial=2,direction = None,piece = None):
         if piece == None:
@@ -35,7 +35,7 @@ class Tetrio:
             0,
             initial - times,
             )
-            print("esto es de left: ", index)
+
         elif direction == 'right':
             # Asegurarse de que start esté en el rango [0, 9]
             start = max(0, min(initial, 9))
@@ -54,14 +54,12 @@ class Tetrio:
                 final = 9
                 index -= len(range(initial, initial+ width-1 ))
 
-            print("esto es de right: ", index)
         return index
 
     def detectCollision(self, row=-1, initial=3, column=0,board=None):
         if board is None:
             board = self.board
         if column <= (self.width - 1) and row > (-len(board)+1):
-            print("detect range: ", board[row][initial : initial + self.width-1])
             index = row -1
             collision = any(board[i][initial+column] == 1 for i in range(index, -len(board)-1, -1))
             isPiece = self.piece[self.height-1][column] == 0 and self.board[row][column+initial] == 1
@@ -82,8 +80,6 @@ class Tetrio:
         isBoard = board is None
         if isBoard:
             board = self.board
-        print("altura de pieza: ", self.height)
-        print("ancho de pieza", self.width)
         for i in range(self.height):
             for j in range(self.width):
                 if self.piece[i][j] == 1:
@@ -118,7 +114,6 @@ class Tetrio:
             if (row - self.height) < -self.current_height:
                 increaseToAdd = min(4, self.MAX_HEIGHT-1 - self.current_height)
                 increase = np.zeros((increaseToAdd,board.shape[1]),dtype = int)
-              
                 self.board = np.vstack((increase, board))
                 
                 self.board_test = np.vstack((increase, board))
@@ -154,7 +149,7 @@ class Tetrio:
         for rot in range(self.rotations):
             initial = self.checkRotation(piece=piece,rotate=rot)
             width = len(pieceToAdd[rot])-1
-            times = (len(self.board[0]))-(initial +width-2)
+            times = (len(self.board[0]))-(initial +width)
             for direction in ['left', 'center', 'right']:
                 if direction == 'center':
                     t = 0
@@ -183,16 +178,7 @@ class Tetrio:
         column = self.moveInBoard(times=times, initial=columnInitial,direction=dir)
         row = self.detectCollision(initial=column,board = board)
         self.increase_height(row=row,board = board)
-
-        print("se decide entonces apilarla en la fila: {}".format(row))
-        print(
-            "con el siguiente rango en columna: ({},{})".format(
-                column, column + self.width - 1
-            )
-        )
         self.addPiece(row=row, column=column,board=board)
-        heuristic = self.heuristic.calculate_heuristics(board = board,initial=column,final=column+self.width-1)
-        print("altura heuristica: ", heuristic)
         self.checkLines(board=board)
 
     def predictMove(self,piece):
@@ -223,11 +209,12 @@ class Tetrio:
             # Realizar la jugada
             self.pressAdd(piece=piece, rotation=rot, dir=direction, times=t)
             print('La mejor jugada es:', move)           
-        self.showBoard()
+            self.showBoard()
         print(len(self.board))
 
 tetrio = Tetrio()
 tetrio.startGame()
+
 
 
 

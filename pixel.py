@@ -28,7 +28,6 @@ def startDetection(pixel):
 
         # Pausa para evitar un bucle infinito demasiado rápido
         time.sleep(1)
-
 def colorPixel(x, y):
     pantalla = ImageGrab.grab()
     color = pantalla.getpixel((x, y))
@@ -47,6 +46,6 @@ def rotate180(steps=1):
     for _ in range(steps):
         py.press('a')
 
-pixel = (670, 224)
-
+#pixel = (670, 224)
+pixel = (671, 189)
 startDetection(pixel)
