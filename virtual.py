@@ -1,7 +1,5 @@
-from pieces import pieces,colores_tetris
+from pieces import pieces
 from rotation import checkRotation
-#from board import board
-import time
 import numpy as np
 from heuristic import Heuristic
 
@@ -20,7 +18,7 @@ class Tetrio:
         self.width = None 
         self.rotations = None  
         self.heuristic = Heuristic()
-        self.colores_tetris = colores_tetris  # Store the colores_tetris dictionary
+
 
     def moveInBoard(self, times=0,initial=2,direction = None,piece = None):
         if piece == None:
@@ -196,24 +194,18 @@ class Tetrio:
         else:
             for i in self.board_test:
                 print(i)
-    def startGame(self):
-        while True:
-            piece = input("Ingresa la próxima pieza ('i', 'o', etc.): ")
-            if piece.lower() == 'exit':
-                break  # Salir del bucle si se ingresa 'exit'
-            
-            # Obtener la mejor jugada para la pieza ingresada
-            move = self.predictMove(piece=piece)
-            piece, rot, direction, t, move_column = move
-            
-            # Realizar la jugada
-            self.pressAdd(piece=piece, rotation=rot, dir=direction, times=t)
-            print('La mejor jugada es:', move)           
-            self.showBoard()
+    def startGame(self,piece):
+        move = self.predictMove(piece=piece)
+        piece, rot, direction, t, move_column = move
+        
+        # Realizar la jugada
+        self.pressAdd(piece=piece, rotation=rot, dir=direction, times=t)
+        print('La mejor jugada es:', move)           
+        self.showBoard()
         print(len(self.board))
+        return move
 
-tetrio = Tetrio()
-tetrio.startGame()
+
 
 
 
