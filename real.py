@@ -17,7 +17,7 @@ def rota(times):
         while count <= times:
             pyautogui.press('x')
             count += 1
-            time.sleep(.1)   
+             
 def moveInBoard(dir, times, rotation):
     rota(times=rotation)     
     moveDir(times=times,dir=dir)
@@ -51,13 +51,12 @@ queue.put(piece)
 while True:
     pixel_board = pyscreeze.pixel(671, 172)
     if pixel_board != (0,0,0):
+        pyautogui.keyDown('down')
+        pyautogui.keyUp('down')
         piece = queue.get()
-        if piece == 'z' or piece == 's':
-            pyautogui.press
         print('pieza a jugar: {}'.format(piece))
         move = tetris.startGame(piece=piece)
         piece, rot, direction, t, move_column = move
-        time.sleep(2)
         pixel_color5 = pyscreeze.pixel(x5, y5)
         piece = colores_tetris[pixel_color5]
         queue.put(piece)

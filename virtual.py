@@ -37,9 +37,12 @@ class Tetrio:
             # Calcular el nuevo valor teniendo en cuenta times
             index = min(initial + times, 9 - (width-1))
         return index
-
+    def verifyCollision(self, initial,board=None):
+        if self.isNone:
+            board
+        
     def detectCollision(self, row=-1, initial=3, column=0,board=None):
-        if board is None:
+        if self.isNone:
             board = self.board
         if column <= (self.width - 1) and row > (-len(board)+1):
             index = row -1
@@ -59,8 +62,8 @@ class Tetrio:
         return row
 
     def addPiece(self, row=2, column=5,board=None):
-        isBoard = board is None
-        if isBoard:
+        
+        if self.isNone:
             board = self.board
         for i in range(self.height):
             for j in range(self.width):
@@ -72,7 +75,7 @@ class Tetrio:
             self.board_test = board
 
     def checkLines(self,board=None):
-        if board is None:
+        if self.isNone:
             board = self.board
         # Revisa si alguna fila está completamente llena de 1 y haz "pop"
         full_rows = [idx for idx, row in enumerate(board) if all(cell == 1 for cell in row)]
@@ -80,7 +83,7 @@ class Tetrio:
             self.cleanLine(row = full_row,board = board)
 
     def cleanLine(self, row,board=None):
-        if board is None:
+        if self.isNone:
             board = self.board
 
         board = np.delete(board, row, axis=0)
@@ -210,4 +213,7 @@ class Tetrio:
         print(len(self.board))
         return move
 
-
+tetris = Tetrio()
+tetris.pressAdd(piece='i',rotation=1,times=0,dir='center')
+tetris.pressAdd(piece='l',rotation=3,times=2,dir='right')
+tetris.showBoard()

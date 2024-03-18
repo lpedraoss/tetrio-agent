@@ -83,7 +83,7 @@ class Heuristic:
         min_height_value =  self.min_height_piece(initial, final) 
         height_difference = self.max_height_value-min_height_value
         lines = self.complete_lines()
-        score =  (holes_piece +height_piece)
+        score =  (holes_piece*.65 +height_piece*.35)
         
         return {
             'holes':holes_piece,
