@@ -39,7 +39,7 @@ class Tetrio:
         return index
     def verifyCollision(self, initial,board=None):
         if self.isNone:
-            board
+            board.....
         
     def detectCollision(self, row=-1, initial=3, column=0,board=None):
         if self.isNone:
