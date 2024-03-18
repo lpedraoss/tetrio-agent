@@ -33,25 +33,9 @@ class Tetrio:
             0,
             initial - times,
             )
-
         elif direction == 'right':
-            # Asegurarse de que start esté en el rango [0, 9]
-            start = max(0, min(initial, 9))
-            # Asegurarse de que end esté en el rango [0, 9]
-            end = max(
-                0,
-                min(initial + width-1, 9),
-            )
             # Calcular el nuevo valor teniendo en cuenta times
-            index = max(0, min(start + times, 9))
-            final = max(0, min(end + times, 9))
-
-            if final >= 9 and len(range(index, final)) != len(
-                range(initial, initial + width-1)
-            ):
-                final = 9
-                index -= len(range(initial, initial+ width-1 ))
-
+            index = min(initial + times, 9 - (width-1))
         return index
 
     def detectCollision(self, row=-1, initial=3, column=0,board=None):
@@ -133,7 +117,6 @@ class Tetrio:
             self.pressAdd(piece=piece,times=t,rotation=rot,dir=direction,board=self.board_test)
             score = self.heuristic.calculate_heuristics(self.board_test, initial, final)['score']
             self.board_test = None
-
             if score <= best_score:
                 best_score = score
                 best_move = move
@@ -155,11 +138,30 @@ class Tetrio:
                     moves.append((piece, rot, direction, t, move))
                 else:
 
-                    for t in range(1,times-1):
+                    for t in range(1,times):
                     
                         move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
                         moves.append((piece, rot, direction, t, move))
         return moves
+    def pressTest(self, piece,times,rotation,dir,board=None):
+        self.isNone = board is None
+        
+        if self.isNone:
+            board = self.board
+        self.rotations = len(pieces[piece]) 
+        #rotate = self.rotations-2
+        rotate = rotation
+        self.piece = pieces[piece][rotate]
+        self.height = len(self.piece)
+        self.width = len(self.piece[0]) 
+        columnInitial = self.checkRotation(piece=piece,rotate=rotate)
+        #altura heuristica:  {'height': 2, 'holes': 2, 'score': 0.03353920515574651}
+        column = self.moveInBoard(times=times, initial=columnInitial,direction=dir)
+        row = self.detectCollision(initial=column,board = board)
+        self.increase_height(row=row,board = board)
+        self.addPiece(row=row, column=column,board=board)
+
+
     def pressAdd(self, piece,times,rotation,dir,board=None):
         self.isNone = board is None
         
@@ -197,19 +199,15 @@ class Tetrio:
     def startGame(self,piece):
         move = self.predictMove(piece=piece)
         piece, rot, direction, t, move_column = move
-        
         # Realizar la jugada
         self.pressAdd(piece=piece, rotation=rot, dir=direction, times=t)
         print('La mejor jugada es:', move)           
         self.showBoard()
+        heuristic =  Heuristic()
+        heur = heuristic.calculate_heuristics(board=self.board,initial=move_column,final=move_column+(len(pieces[piece][rot])-1))
+        print('heuristica: ',heur)
+
         print(len(self.board))
         return move
-
-
-
-
-
-
-
 
 
