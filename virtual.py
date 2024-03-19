@@ -37,10 +37,25 @@ class Tetrio:
             # Calcular el nuevo valor teniendo en cuenta times
             index = min(initial + times, 9 - (width-1))
         return index
-    def verifyCollision(self, initial,board=None):
+    def verifyCollision(self, initial=3,board=None):
+        row = 0
         if self.isNone:
-            board.....
-        
+            board = self.board
+        for pj in range(self.width):
+            for pi in range(self.height):
+                for i in range(len(board)):
+                    downPiece = self.height-pi-1
+                    maxDeep = len(board)-(i+1)
+                    if board[i][initial+pj]==0:
+                        if maxDeep < self.height:
+                            row = -1
+                            break
+                    elif board[i][initial+pj]==1 and self.piece[downPiece][pj]==1:
+                            row = -(len(board)-(i))-downPiece+1
+                            return row
+            
+    
+        return row
     def detectCollision(self, row=-1, initial=3, column=0,board=None):
         if self.isNone:
             board = self.board
@@ -179,7 +194,7 @@ class Tetrio:
         columnInitial = self.checkRotation(piece=piece,rotate=rotate)
         #altura heuristica:  {'height': 2, 'holes': 2, 'score': 0.03353920515574651}
         column = self.moveInBoard(times=times, initial=columnInitial,direction=dir)
-        row = self.detectCollision(initial=column,board = board)
+        row = self.verifyCollision(initial=column,board = board)
         self.increase_height(row=row,board = board)
         self.addPiece(row=row, column=column,board=board)
         self.checkLines(board=board)
@@ -215,5 +230,5 @@ class Tetrio:
 
 tetris = Tetrio()
 tetris.pressAdd(piece='i',rotation=1,times=0,dir='center')
-tetris.pressAdd(piece='l',rotation=3,times=2,dir='right')
+tetris.pressAdd(piece='z',rotation=1,times=1,dir='center')
 tetris.showBoard()
