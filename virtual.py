@@ -53,28 +53,40 @@ class Tetrio:
                     elif board[i][initial+pj]==1 and self.piece[downPiece][pj]==1:
                             row = -(len(board)-(i))-downPiece+1
                             return row
-            
-    
         return row
-    def detectCollision(self, row=-1, initial=3, column=0,board=None):
+    
+    def detectCollision(self, row=-1, initial=3, column=0,board=None,deeph=[]):
+        deep=0     
         if self.isNone:
             board = self.board
         if column <= (self.width - 1) and row > (-len(board)+1):
-            index = row -1
+            index = row-1
             collision = any(board[i][initial+column] == 1 for i in range(index, -len(board)-1, -1))
+            isBoard = board[row][initial+column]==1
             isPiece = self.piece[self.height-1][column] == 0 and self.board[row][column+initial] == 1
-            isBoard = self.piece[self.height-1][column]==1 and board[row][column+initial]==0
+            notPiece = self.piece[self.height-1][column]==1 and board[row][column+initial]==0
             both = self.piece[self.height-1][column] == 0 and board[row][column+initial]==0
-            isHole = isPiece or isBoard or both
-            
-            if not collision:
-                if isHole:
-                    row = self.detectCollision(row=row, initial=initial, column=column + 1,board=board)
-                else:
-                    row = self.detectCollision(row=row - 1, initial=initial, column=0,board=board)
+            isHole = isPiece or notPiece or both
+            if collision or isBoard:
+                    if row == -1:
+                        row,deeph = self.detectCollision(row=row - 1, initial=initial, column=column,board=board,deeph=[])
+                    else:
+                        for i in range(self.height):
+                            down_peace = self.height-i-1
+                            if self.piece[down_peace][column] == 0:
+                                deep+=1
+                            elif self.piece[down_peace][column] == 1:
+                                break
+                        row,deeph = self.detectCollision(row=row - 1, initial=initial, column=column,board=board,deeph=deeph)
+                        deeph.append(deep)
+                
             else:
-                row = self.detectCollision(row=row - 1, initial=initial, column=0,board=board)
-        return row
+                if row == -1:
+                    deeph = []
+                row,deeph = self.detectCollision(row=row, initial=initial, column=column + 1,board=board,deeph=deeph)       
+        if deeph == []:
+            deeph.append(0)   
+        return row,deeph
 
     def addPiece(self, row=2, column=5,board=None):
         
@@ -194,7 +206,8 @@ class Tetrio:
         columnInitial = self.checkRotation(piece=piece,rotate=rotate)
         #altura heuristica:  {'height': 2, 'holes': 2, 'score': 0.03353920515574651}
         column = self.moveInBoard(times=times, initial=columnInitial,direction=dir)
-        row = self.verifyCollision(initial=column,board = board)
+        row,deeph = self.detectCollision(initial=column,board = board)
+        row += max(deeph)
         self.increase_height(row=row,board = board)
         self.addPiece(row=row, column=column,board=board)
         self.checkLines(board=board)
@@ -208,12 +221,7 @@ class Tetrio:
         print('--------------------BOARD----------------------')
         for i in self.board:
             print(i)
-        print('--------------------BOARD_TEST-------------------')
-        if self.board_test is None:
-            print('BOARD TEST IS EMPTY')
-        else:
-            for i in self.board_test:
-                print(i)
+
     def startGame(self,piece):
         move = self.predictMove(piece=piece)
         piece, rot, direction, t, move_column = move
@@ -229,6 +237,8 @@ class Tetrio:
         return move
 
 tetris = Tetrio()
-tetris.pressAdd(piece='i',rotation=1,times=0,dir='center')
-tetris.pressAdd(piece='z',rotation=1,times=1,dir='center')
+tetris.pressAdd(piece='i',rotation=0,times=1,dir='left')
+tetris.pressAdd(piece='j',rotation=0,times=1,dir='center')
+tetris.pressAdd(piece='t',rotation=1,times=3,dir='left')
+tetris.pressAdd(piece='o',rotation=0,times=5,dir='left')
 tetris.showBoard()
