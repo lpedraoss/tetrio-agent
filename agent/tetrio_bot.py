@@ -1,7 +1,7 @@
 import pyautogui
 import pyscreeze
 from tetris.colors import determine_tetris_piece
-
+from tetris.pixel import pixels
 from agent.agent import Agent
 from queue import Queue
 
@@ -28,11 +28,11 @@ class TetrioBot():
     def play(self):
         
         agent = Agent()
-        x1,y1 =(877, 197)
-        x2,y2 = (877, 269)
-        x3,y3 =  (877, 341) 
-        x4,y4 = (877, 412)
-        x5,y5 = (876, 485) 
+        x1,y1 = pixels[1]
+        x2,y2 = pixels[2]
+        x3,y3 = pixels[3] 
+        x4,y4 = pixels[4]
+        x5,y5 = pixels[5] 
 
         pixel_color1 = pyscreeze.pixel(x1, y1)
         pixel_color2 = pyscreeze.pixel(x2, y2)
