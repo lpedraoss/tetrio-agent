@@ -40,29 +40,22 @@ class Heuristic:
     
     def holes_in_range(self, initial, final):
         total_holes = 0
+        rows = len(self.board)
+        cols = len(self.board[0])  # Supongo que todas las filas tienen la misma longitud
+        
         for col_index in range(initial, final + 1):
             block_found = False
-            for row_index in range(len(self.board)):
-                if self.board[row_index][col_index] == 1:
-                    block_found = True
-                elif block_found and self.board[row_index][col_index] == 0:
-                    total_holes += 1
-                elif self.board[row_index][col_index] == 1:
-                    break
+            for row_index in range(rows):
+                # Verificar si el índice de fila y columna está dentro del rango válido
+                if 0 <= row_index < rows and 0 <= col_index < cols:
+                    if self.board[row_index][col_index] == 1:
+                        block_found = True
+                    elif block_found and self.board[row_index][col_index] == 0:
+                        total_holes += 1
+                    elif self.board[row_index][col_index] == 1:
+                        break
         return total_holes
-    def min_height_piece(self, initial, final):
-        min_height_value = float('inf')  # Inicializar con un valor muy grande
-        
-        # Iterar sobre las columnas en el rango especificado
-        for col in range(initial, final+1):
-            # Iterar sobre las filas en la columna actual
-            for row in range(len(self.board)):
-                if self.board[row, col] == 1:
-                    height = len(self.board) - row
-                    # Actualizar el valor mínimo de altura
-                    min_height_value = min(min_height_value, height)
-                    break  # Detener la búsqueda en esta columna después de encontrar el primer 1
-        return min_height_value
+  
 
     def max_height_piece(self, initial, final):
         height = 0
@@ -80,16 +73,13 @@ class Heuristic:
         height_piece = self.max_height_piece(initial=initial,final=final)
         holes_piece = self.holes_in_range(initial=initial,final=final)
         holes_value = self.holes()
-        min_height_value =  self.min_height_piece(initial, final) 
-        height_difference = self.max_height_value-min_height_value
+    
+
         lines = self.complete_lines()
-        score =  (holes_piece*.65 +height_piece*.35)
+        score =  (holes_piece*.75 +  (height_piece)*.35)
         
         return {
             'holes':holes_piece,
             'height': height_piece,
-            'min': min_height_value,
-            'height diference':height_difference,
-
             'score': score
         }

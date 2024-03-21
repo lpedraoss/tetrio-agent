@@ -3,3 +3,4 @@ prox
 board.py
 heuristic.p
 detect_pixel.py
+ward.py
