@@ -1,6 +1,6 @@
 # tetrio-agent
 
-Este es un bot diseñado para jugar Tetrio.
+Este es un bot diseñado para jugar en [Tetr.io](https://tetr.io/):
 
 ## Uso
 
