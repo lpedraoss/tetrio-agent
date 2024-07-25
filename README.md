@@ -1,6 +1,7 @@
 # tetrio-agent
-
-Este es un bot diseñado para jugar en [Tetr.io](https://tetr.io/):
+**Autor:** Luis Alfonso Pedraos Suarez
+**Grupo:** "sin grupo"
+Este es un bot diseñado para jugar Tetrio.
 
 ## Uso
 
