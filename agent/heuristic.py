@@ -75,7 +75,7 @@ class Heuristic:
     
 
         lines = self.complete_lines()
-        score =  lines*.55 - (holes_piece*.35 +  (height_piece)*.75)*.45
+        score =  (holes_piece*.75 +  (height_piece)*.35)
         
         return {
             'holes':holes_piece,

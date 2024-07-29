@@ -4,8 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from load_variants import variants  # Import the loaded variants
-
+from load_variants import variants
 from colors import tetris_colors
 
 # Unificar ambos diccionarios

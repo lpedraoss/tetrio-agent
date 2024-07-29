@@ -15,7 +15,7 @@ class Agent(BaseBoard):
     def selectBestMove(self, moves):
         # Evaluar cada movimiento usando la heurística y seleccionar el mejor
         best_move = None
-        best_score = float('-inf')
+        best_score = float('inf')
         test = TestBoard()
         for move in moves:
             self.board_test = np.copy(self.board)
@@ -25,7 +25,7 @@ class Agent(BaseBoard):
             test.pressAdd(piece=piece,times=t,rotation=rot,dir=direction,board=self.board_test)
             score = self.heuristic.calculate_heuristics(self.board_test, initial, final)['score']
             self.board_test = None
-            if score >= best_score:
+            if score <= best_score:
                 best_score = score
                 best_move = move
         return best_move

@@ -9,7 +9,7 @@ class TetrisNet(nn.Module):
         super(TetrisNet, self).__init__()
         self.fc1 = nn.Linear(3, 64)
         self.fc2 = nn.Linear(64, 64)
-        self.fc3 = nn.Linear(64, 7)  # Cambia el número 7 si hay más o menos clases
+        self.fc3 = nn.Linear(64, 8)  # Cambia el número 7 si hay más o menos clases
     
     def forward(self, x):
         x = torch.relu(self.fc1(x))

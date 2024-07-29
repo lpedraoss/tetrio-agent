@@ -61,10 +61,12 @@ class TetrioBot():
                 move = self.agent.startGame(piece=piece)
                 piece, rot, direction, t, move_column = move
                 self.moveInBoard(dir=direction, rotation=rot, times=t)
-                
-                # Capture the color of the new piece and add it to the queue
-                new_piece_color = pyscreeze.pixel(self.x5, self.y5)
-                new_piece = find_colors_tetris_piece(new_piece_color)
+                while True:
+                    # Capture the color of the new piece and add it to the queue
+                    new_piece_color = pyscreeze.pixel(self.x5, self.y5)
+                    new_piece = find_colors_tetris_piece(new_piece_color)
+                    if new_piece != "board":
+                        break
                 self.queue.put(new_piece)
                 print('captura el color')
                 print('pieza a añadir', new_piece)
