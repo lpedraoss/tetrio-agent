@@ -25,38 +25,80 @@ class TetrioBot():
         #pyscreeze.pixel(self.board_pixel_x, self.board_pixel_y)
 
     def moveDir(self, dir, times):
+        """
+        Mueve la pieza en la dirección especificada un número determinado de veces.
+        
+        Args:
+        dir (str): La dirección en la que mover la pieza ('left', 'right', 'center').
+        times (int): El número de veces que mover la pieza en la dirección especificada.
+        """
         if dir != 'center':
             for _ in range(times):
                 pyautogui.press(dir)
+                time.sleep(0.01)
     
     def rota(self, times):
+        """
+        Rota la pieza un número determinado de veces.
+        
+        Args:
+        times (int): El número de veces que rotar la pieza.
+        """
         for _ in range(times):
             pyautogui.press('x')
+            time.sleep(0.01)
     
     def moveInBoard(self, dir, times, rotation):
+        """
+        Mueve y rota la pieza dentro del tablero.
+        
+        Args:
+        dir (str): La dirección en la que mover la pieza ('left', 'right', 'center').
+        times (int): El número de veces que mover la pieza en la dirección especificada.
+        rotation (int): El número de veces que rotar la pieza.
+        """
         self.rota(times=rotation)
         self.moveDir(times=times, dir=dir)
+        time.sleep(0.01)
     
     def capturePieceColors(self):
+        """
+        Captura los colores de los píxeles de las piezas actuales.
+        
+        Returns:
+        List: Una lista de los colores de las piezas.
+        """
         pieces = []
         pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x1, self.y1)))
+        time.sleep(0.01)
         pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x2, self.y2)))
+        time.sleep(0.01)
         pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x3, self.y3)))
+        time.sleep(0.01)
         pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x4, self.y4)))
+        time.sleep(0.01)
         pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x5, self.y5)))
+        time.sleep(0.01)
+        
         return pieces
 
     def play(self):
+        """
+        Inicia el juego y controla las piezas basándose en los colores capturados.
+        """
         # Capture initial piece colors
         initial_pieces = self.capturePieceColors()
         for piece in initial_pieces:
             self.queue.put(piece)
+            time.sleep(0.01)
         
         while True:
             # Check if a new piece has appeared on the board by detecting a color change
             current_pixel_color = pyscreeze.pixel(self.board_pixel_x, self.board_pixel_y)
             if current_pixel_color != self.color_board:
+                time.sleep(0.01)
                 piece = self.queue.get()
+                time.sleep(0.01)
                 print('pieza a jugar: {}'.format(piece))
                 move = self.agent.startGame(piece=piece)
                 piece, rot, direction, t, move_column = move
@@ -70,7 +112,7 @@ class TetrioBot():
                 self.queue.put(new_piece)
                 print('captura el color')
                 print('pieza a añadir', new_piece)
-                time.sleep(1)
+                time.sleep(.01)
                 pyautogui.press('space')
                 
             # Small delay to avoid high CPU usage
