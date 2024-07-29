@@ -9,6 +9,7 @@ class Agent(BaseBoard):
 
     def __init__(self):
         super().__init__()
+        self.board = np.zeros((20, 10), dtype=int)
         self.heuristic = Heuristic()
 
         
