@@ -69,16 +69,32 @@ class TetrioBot():
         List: Una lista de los colores de las piezas.
         """
         pieces = []
-        pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x1, self.y1)))
+        color1 = pyscreeze.pixel(self.x1, self.y1)
+        color2 = pyscreeze.pixel(self.x2, self.y2)
+        color3 = pyscreeze.pixel(self.x3, self.y3)
+        color4 = pyscreeze.pixel(self.x4, self.y4)
+        color5 = pyscreeze.pixel(self.x5, self.y5)
+        piece1 = find_colors_tetris_piece(color1)
+        piece2 = find_colors_tetris_piece(color2)
+        piece3 = find_colors_tetris_piece(color3)
+        piece4 = find_colors_tetris_piece(color4)
+        piece5 = find_colors_tetris_piece(color5)
+        pieces.append(piece1)
         time.sleep(0.01)
-        pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x2, self.y2)))
+        pieces.append(piece2)
         time.sleep(0.01)
-        pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x3, self.y3)))
+        pieces.append(piece3)
         time.sleep(0.01)
-        pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x4, self.y4)))
+        pieces.append(piece4)
         time.sleep(0.01)
-        pieces.append(find_colors_tetris_piece(pyscreeze.pixel(self.x5, self.y5)))
+        pieces.append(piece5)
         time.sleep(0.01)
+        
+        print('color detectado: ',color1,' ==> {}'.format(piece1))
+        print('color detectado: ',color2,' ==> {}'.format(piece2))
+        print('color detectado: ',color3,' ==> {}'.format(piece3))
+        print('color detectado: ',color4,' ==> {}'.format(piece4))
+        print('color detectado: ',color5,' ==> {}'.format(piece5))
         
         return pieces
 
@@ -99,20 +115,27 @@ class TetrioBot():
                 time.sleep(0.01)
                 piece = self.queue.get()
                 time.sleep(0.01)
-                print('pieza a jugar: {}'.format(piece))
                 move = self.agent.startGame(piece=piece)
                 piece, rot, direction, t, move_column = move
                 self.moveInBoard(dir=direction, rotation=rot, times=t)
+                print('{*********************************}')
+                print('pieza a jugar: {}'.format(piece))
+                print('{*********************************}')
                 while True:
                     # Capture the color of the new piece and add it to the queue
                     new_piece_color = pyscreeze.pixel(self.x5, self.y5)
+                    print('color nuevo: ', new_piece_color)
+                    
                     new_piece = find_colors_tetris_piece(new_piece_color)
                     if new_piece != "board":
                         break
                 self.queue.put(new_piece)
+                print('<----------------------------->')
                 print('captura el color')
                 print('pieza a añadir', new_piece)
-                time.sleep(.01)
+                print('<----------------------------->')
+                
+                time.sleep(3)
                 pyautogui.press('space')
                 
             # Small delay to avoid high CPU usage

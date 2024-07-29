@@ -8,7 +8,7 @@ from load_variants import variants
 from colors import tetris_colors
 
 # Unificar ambos diccionarios
-combined_colors = {**tetris_colors, **variants}
+combined_colors = {**tetris_colors}
 
 # Preparar los datos
 colors = np.array(list(combined_colors.keys()))
