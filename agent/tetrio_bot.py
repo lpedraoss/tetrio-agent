@@ -21,7 +21,8 @@ class TetrioBot():
         # Initialize board pixel position
         self.board_pixel_x = 664
         self.board_pixel_y = 66
-        self.last_pixel_color = pyscreeze.pixel(self.board_pixel_x, self.board_pixel_y)
+        self.color_board = (0,0,0) 
+        #pyscreeze.pixel(self.board_pixel_x, self.board_pixel_y)
 
     def moveDir(self, dir, times):
         if dir != 'center':
@@ -54,9 +55,7 @@ class TetrioBot():
         while True:
             # Check if a new piece has appeared on the board by detecting a color change
             current_pixel_color = pyscreeze.pixel(self.board_pixel_x, self.board_pixel_y)
-            if current_pixel_color != self.last_pixel_color:
-                self.last_pixel_color = current_pixel_color
-
+            if current_pixel_color != self.color_board:
                 piece = self.queue.get()
                 print('pieza a jugar: {}'.format(piece))
                 move = self.agent.startGame(piece=piece)
@@ -69,8 +68,8 @@ class TetrioBot():
                 self.queue.put(new_piece)
                 print('captura el color')
                 print('pieza a añadir', new_piece)
-                
+                time.sleep(1)
                 pyautogui.press('space')
-            
+                
             # Small delay to avoid high CPU usage
             time.sleep(0.01)

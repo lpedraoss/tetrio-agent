@@ -68,7 +68,6 @@ class Heuristic:
         
     def calculate_heuristics(self,board,initial,final):
         self.board = board
-        lines = self.complete_lines()
         self.max_height_value = self.max_height()
         height_piece = self.max_height_piece(initial=initial,final=final)
         holes_piece = self.holes_in_range(initial=initial,final=final)
@@ -76,10 +75,11 @@ class Heuristic:
     
 
         lines = self.complete_lines()
-        score =  (holes_piece*.55 +  (height_piece)*.45)
+        score =  lines*.55 - (holes_piece*.35 +  (height_piece)*.75)*.45
         
         return {
             'holes':holes_piece,
             'height': height_piece,
+            'lines':lines,
             'score': score
         }

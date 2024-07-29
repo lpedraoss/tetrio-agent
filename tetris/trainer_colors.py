@@ -4,12 +4,16 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from load_variants import variants  # Import the loaded variants
+
 from colors import tetris_colors
 
+# Unificar ambos diccionarios
+combined_colors = {**tetris_colors, **variants}
 
 # Preparar los datos
-colors = np.array(list(tetris_colors.keys()))
-pieces = np.array(list(tetris_colors.values()))
+colors = np.array(list(combined_colors.keys()))
+pieces = np.array(list(combined_colors.values()))
 
 # Codificar las etiquetas de piezas
 label_encoder = LabelEncoder()
@@ -36,6 +40,7 @@ class TetrisNet(nn.Module):
         x = torch.relu(self.fc2(x))
         x = self.fc3(x)
         return x
+
 # Crear el modelo, definir la pérdida y el optimizador
 model = TetrisNet()
 criterion = nn.CrossEntropyLoss()

@@ -145,7 +145,7 @@ tetris_colors = {
 (165, 62, 155):'t',
 }
 
-
+"""Colores correspondientes a las piezas de tetris."""
 
 def calculate_distance(color1, color2):
     return np.sqrt(np.sum((np.array(color1) - np.array(color2))**2))

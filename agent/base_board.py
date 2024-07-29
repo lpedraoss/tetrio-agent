@@ -6,7 +6,7 @@ from agent.heuristic import Heuristic
 class BaseBoard:
 
     def __init__(self):
-        self.board = np.zeros((5, 10), dtype=int)
+        self.board = np.zeros((8, 10), dtype=int)
         self.board_test=None
         self.is_Default_board = None
         self.checkRotation = checkRotation
