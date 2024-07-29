@@ -38,6 +38,8 @@ class BaseBoard:
         return index
  
     def detectCollision(self, row=-1, initial=3, column=0,board=None,deeph=[]):
+        #TODO:
+        # aun persiste el error de colision, ahora veo es en o, antes se habia solucionado para las l y j.
         if self.is_Default_board:
             board = self.board
         
