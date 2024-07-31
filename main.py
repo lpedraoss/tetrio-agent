@@ -36,24 +36,34 @@ def play_game():
         bot = TetrioBot()
         bot.play()
 
-def main():
-    
-    
-    tet = Agent()
-    tet.startGame(piece='s')
-    tet.startGame(piece='z')
-    tet.startGame(piece='o')
-    tet.startGame(piece='i')
-    tet.startGame(piece='l')
-    tet.startGame(piece='t')
-    tet.startGame(piece='j')
-    tet.startGame(piece='s')
-    tet.startGame(piece='z')
-    tet.baseBoard.board
-    tet.startGame(piece='o')
-    tet.baseBoard.board
+def tetrisCLI():
+    clear_console()
+    print("Tetris Bot CLI - Type 'help' for a list of commands.")
 
-    """
+    while True:
+        # Mostrar el prompt de entrada
+        command = input("> ").strip().lower()
+
+        if command == 'load':
+            load_models()
+        elif command == 'start':
+            play_game()
+        elif command == 'help' or command == "?":
+            clear_console()
+            print("Available commands:")
+            print("  load       - Load the models")
+            print("  start      - Start the game (models must be loaded first)")
+            print("  exit       - Exit the program")
+        elif command == 'exit':
+            clear_console()
+            print("Exiting...")
+            break
+        else:
+            clear_console()
+            print("Unknown command. Type 'help' for a list of commands.")
+
+def pressAddTest():
+    
     tet = BaseBoard()
     tet.pressAdd(piece='s',times=8,dir='right',rotation=0)
     tet.pressAdd(piece='z',times=2,dir='right',rotation=1)
@@ -67,8 +77,29 @@ def main():
     tet.pressAdd(piece='o',rotation=0,dir='right',times=3)
     
     tet.showBoard()
-    """
-    
+def startGameTest():
+
+    tet = Agent()
+    tet.startGame(piece='s')
+    tet.startGame(piece='z')
+    tet.startGame(piece='o')
+    tet.startGame(piece='i')
+    tet.startGame(piece='l')
+    tet.startGame(piece='t')
+    tet.startGame(piece='j')
+    tet.startGame(piece='s')
+    tet.startGame(piece='z')
+    tet.startGame(piece ='o')
+    #tet.baseBoard.showBoard()
+def main():
+
+    #tetrisCLI()
+    startGameTest()
+    print('<----- verificando resultado con startGame ------>')
+
+    print('<----- verificando resultado con pressAdd ------>')
+    pressAddTest()
+    print('<----- board verificado ------>')
 
     
     #capture_colors()

@@ -3,12 +3,12 @@
 import numpy as np
 
 class Heuristic:
-    def __ini__(self):
+    def __init__(self):
         self.board = None
-        self.height = None
-        self.holes = None
-        self.score = None
-        self.max_height_value = None
+        self.height = 0
+        self.holes = 0
+        self.score = 0
+        self.max_height_value = 0
         
     def complete_lines(self):
         count = 0
@@ -55,7 +55,6 @@ class Heuristic:
                     elif self.board[row_index][col_index] == 1:
                         break
         return total_holes
-  
 
     def max_height_piece(self, initial, final):
         height = 0
@@ -67,11 +66,11 @@ class Heuristic:
         return height
         
     def calculate_heuristics(self,board,initial,final):
-        self.board = board
+        self.board = np.copy(board)
         self.max_height_value = self.max_height()
-        height_piece = self.max_height_piece(initial=initial,final=final)
-        holes_piece = self.holes_in_range(initial=initial,final=final)
-        holes_value = self.holes()
+        height_piece = self.max_height_piece(initial= initial,final= final)
+        holes_piece = self.holes_in_range(initial= initial,final= final)
+        #holes_value = self.holes()
     
 
         lines = self.complete_lines()

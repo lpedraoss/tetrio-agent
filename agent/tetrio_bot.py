@@ -135,7 +135,7 @@ class TetrioBot():
                 print('pieza a añadir', new_piece)
                 print('<----------------------------->')
                 
-                time.sleep(3)
+                #time.sleep(3)
                 pyautogui.press('space')
                 
             # Small delay to avoid high CPU usage

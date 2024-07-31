@@ -1,4 +1,5 @@
 
+import random
 from tetris.pieces import pieces
 from tetris.rotation import checkRotation
 import numpy as np
@@ -6,7 +7,8 @@ from agent.heuristic import Heuristic
 class BaseBoard:
 
     def __init__(self):
-        self.board = np.zeros((8, 10), dtype=int)
+        self.board = np.zeros((40, 10), dtype=int)
+        self.test_board = np.copy(self.board)
         self.is_Default_board = False
         self.checkRotation = checkRotation
         self.piece = None
@@ -41,7 +43,6 @@ class BaseBoard:
         # aun persiste el error de colision, ahora veo es en o, antes se habia solucionado para las l y j.
         if self.is_Default_board:
             board = self.board
-        
         deep=0
         if column <= (self.width - 1) and row > (-len(board)+1):
             index = row -1
@@ -83,7 +84,9 @@ class BaseBoard:
                 if self.piece[i][j] == 1:
                     board[row + i - self.height + 1][column + j] = 1
         if self.is_Default_board:
-            self.board = board
+            self.board = np.copy(board)
+        else:
+            self.test_board = np.copy(board)
     
             
 
@@ -103,20 +106,22 @@ class BaseBoard:
         new_row = np.zeros((1, board.shape[1]), dtype=int)
         board = np.insert(board, 0, new_row, axis=0)
         if self.is_Default_board:
-            self.board = board
+            self.board = np.copy(board)
+        else:
+            self.test_board = np.copy(board)    
 
             
     def increase_height(self, row,board=None):
-            if board is None:
+            if self.is_Default_board:
                 board = self.board
             if (row - self.height) < -self.current_height:
                 increaseToAdd = min(4, self.MAX_HEIGHT-1 - self.current_height)
                 increase = np.zeros((increaseToAdd,board.shape[1]),dtype = int)
                 board = np.vstack((increase, board))
                 if self.is_Default_board:
-                    self.board = board
-
-                    
+                    self.board = np.copy(board)
+                else:
+                    self.test_board = np.copy(board)
                 self.current_height += increaseToAdd
 
     
@@ -143,9 +148,11 @@ class BaseBoard:
                         move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
                         moves.append((piece, rot, direction, t, move))
                 elif direction == 'left':
+                    
                     for t in range(1,timesLeft+5):
                         move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
                         moves.append((piece, rot, direction, t, move))
+        #selected_moves = random.sample(moves,min(len(moves), 5)) esto para generar un número limitado de movimientos
         return moves
 
 
@@ -165,6 +172,8 @@ class BaseBoard:
         #altura heuristica:  {'height': 2, 'holes': 2, 'score': 0.03353920515574651}
         column = self.moveInBoard(times=times, initial=columnInitial,direction=dir)
         row,deeph = self.detectCollision(initial=column,board = board)
+        #TODO: se prevee el problema sea aquí
+        
         if row >= -2:
             deeph = []
         if deeph == []:
@@ -187,6 +196,7 @@ class BaseBoard:
         """Create a copy to test moves"""
         test_board = BaseBoard()
         test_board.board = np.copy(self.board)
+        test_board.test_board = np.copy(self.test_board)
         test_board.is_Default_board = self.is_Default_board
         test_board.piece = np.copy(self.piece) if self.piece is not None else None
         test_board.height = self.height

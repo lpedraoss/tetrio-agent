@@ -1,3 +1,4 @@
+import random
 import time
 from agent.base_board import BaseBoard
 from tetris.pieces import pieces
@@ -37,11 +38,12 @@ class Agent():
             initial = move_column
             final = move_column + len(pieces[piece][rot][0]) - 1
             testing.pressAdd( piece = piece,times = t,rotation = rot,dir = direction,board = testing.board )
-            score = self.heuristic.calculate_heuristics( testing.board, initial, final )['score']
-            
+            score = self.heuristic.calculate_heuristics( board = testing.board,initial = initial,final = final )['score']
+            print(f"Evaluating move {move}: score {score}")  # Agregar línea de depuración
             if score <= best_score:
                 best_score = score
                 best_move = move
+        print(f"Selected best move: {best_move} with score {best_score}")
         return best_move
 
     def predictMove(self,piece):
@@ -56,6 +58,9 @@ class Agent():
         """
         moves = self.baseBoard.generateMoves(piece=piece)    
         best_move = self.selectBestMove(moves=moves)
+        #index = random.randint(0, len(moves) - 1)
+        #best_move = moves[index]
+        #best_move = moves[4]
         return best_move
 
     def startGame(self,piece):
@@ -76,9 +81,9 @@ class Agent():
         
         print('La mejor jugada es:', move)           
         self.baseBoard.showBoard()
-        heuristic =  Heuristic()
-        heur = heuristic.calculate_heuristics(board=self.baseBoard.board,initial=move_column,final=move_column+(len(pieces[piece][rot])-1))
-        print('heuristica: ',heur)
+        #heuristic =  Heuristic()
+        #heur = heuristic.calculate_heuristics(board=self.baseBoard.board,initial=move_column,final=move_column+(len(pieces[piece][rot])-1))
+        #print('heuristica: ',heur)
 
         print(len(self.baseBoard.board))
         return move
