@@ -7,8 +7,7 @@ class BaseBoard:
 
     def __init__(self):
         self.board = np.zeros((8, 10), dtype=int)
-        self.board_test=None
-        self.is_Default_board = None
+        self.is_Default_board = False
         self.checkRotation = checkRotation
         self.piece = None
         self.height = None
@@ -85,8 +84,8 @@ class BaseBoard:
                     board[row + i - self.height + 1][column + j] = 1
         if self.is_Default_board:
             self.board = board
-        else:
-            self.board_test = board
+    
+            
 
     def checkLines(self,board=None):
         if self.is_Default_board:
@@ -105,8 +104,7 @@ class BaseBoard:
         board = np.insert(board, 0, new_row, axis=0)
         if self.is_Default_board:
             self.board = board
-        else:
-            self.board_test =  board
+
             
     def increase_height(self, row,board=None):
             if board is None:
@@ -117,14 +115,13 @@ class BaseBoard:
                 board = np.vstack((increase, board))
                 if self.is_Default_board:
                     self.board = board
-                else:
-                    self.board_test = board
+
+                    
                 self.current_height += increaseToAdd
 
     
     def generateMoves(self,piece,initial=3):
-        self.board_test = self.board
-        board = np.copy(self.board_test)
+    
         moves = []
         pieceToAdd = pieces[piece]
         #times = (len(self.board[0]))-(initial+self.width-2)
@@ -132,8 +129,8 @@ class BaseBoard:
         for rot in range(self.rotations):
             initial = self.checkRotation(piece=piece,rotate=rot)
             width = len(pieceToAdd[rot])-1
-            timesRight = (len(board[0]))-(initial+width)
-            timesLeft = (len(board[0]))-(initial)
+            timesRight = (len(self.board[0]))-(initial+width)
+            timesLeft = (len(self.board[0]))-(initial)
             for direction in ['left', 'center', 'right']:
                 if direction == 'center':
                     t = 0
@@ -153,6 +150,7 @@ class BaseBoard:
 
 
     def pressAdd(self, piece,times,rotation,dir,board=None):
+        
         self.is_Default_board = board is None
         
         if self.is_Default_board:
@@ -176,14 +174,24 @@ class BaseBoard:
         self.increase_height(row=row,board = board)
     
         self.addPiece(row=row, column=column,board=board)
+        
         self.checkLines(board=board)
 
     def showBoard(self):
         print('--------------------BOARD----------------------')
-        for i in self.board:
-            print(i)
-
-    def startGame(self,piece):
-        """Inicia el juego evaluando la mejor jugada"""
-        pass
-
+        if self.is_Default_board:
+            for i in self.board:
+                print(i)
+                
+    def copy(self):
+        """Create a copy to test moves"""
+        test_board = BaseBoard()
+        test_board.board = np.copy(self.board)
+        test_board.is_Default_board = self.is_Default_board
+        test_board.piece = np.copy(self.piece) if self.piece is not None else None
+        test_board.height = self.height
+        test_board.current_height = self.current_height
+        test_board.MAX_HEIGHT = self.MAX_HEIGHT
+        test_board.width = self.width
+        test_board.rotations = self.rotations
+        return test_board
