@@ -1,35 +1,10 @@
-def checkRotation(piece,rotate=0):
-    index = 3
-    if piece == "l":
-        if rotate == 0 or rotate == 2 or rotate ==3:
-            index = 3
-        elif rotate == 1:
-            index = 4
-    elif piece == 'j':
-        if rotate == 0 or rotate == 2 or rotate == 3:
-            index = 3
-        elif rotate == 1:
-            index = 4
-    elif piece == 'z':
-        if rotate == 0:
-            index = 3
-        elif rotate == 1:
-            index = 4
-    elif piece == 's':
-        if rotate == 0:
-            index = 3
-        elif rotate == 1:
-            index = 4
-    elif piece == 't':
-        if rotate == 0 or rotate == 2 or rotate == 3:
-            index = 3
-        elif rotate == 1:
-            index = 4
+def checkRotation(piece, rotate=0):
+    if piece in ['l', 'j', 't']:
+        return 4 if rotate == 1 else 3
+    elif piece in ['z', 's']:
+        return 4 if rotate == 1 else 3
     elif piece == 'o':
-        index = 4
+        return 4
     elif piece == 'i':
-        if rotate == 0:
-            index = 3
-        elif rotate == 1:
-            index = 5
-    return index
+        return 5 if rotate == 1 else 3
+    return 3

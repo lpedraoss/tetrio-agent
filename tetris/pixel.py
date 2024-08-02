@@ -1,7 +1,18 @@
 pixels={
-    1:(877, 197),
-    2:(877, 269),
-    3:(877, 341), 
-    4:(877, 412),
-    5:(876, 485)
+    #1:(945, 178),
+    1:(937,157),
+    2:(946, 257),
+    3:(952, 355), 
+    4:(943, 451),
+    5:(945, 544)
 }       
+"""
+This module defines a dictionary of pixel coordinates.
+
+Attributes:
+    pixels (dict): A dictionary mapping pixel IDs to their corresponding coordinates.
+
+Example:
+    >>> pixels[1]
+    (945, 178)
+"""

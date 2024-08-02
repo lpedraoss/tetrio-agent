@@ -2,6 +2,17 @@
 import numpy as np 
 
 tetris_colors = {
+#principals colors
+(0,0,0):"board",
+  (255,255,255):"board",
+    (0,255,255):'i',
+(255,255,0):'o',
+(128, 0, 128):'t',
+(0,255,0):'s',
+(255,0,0):'z',
+(0,0,255):'j',
+(255, 165, 0):'l',
+#<----------------->
 (48, 144, 109):'i',
 (49, 127, 99):'i',
 (57, 173, 131):'i',
@@ -80,6 +91,7 @@ tetris_colors = {
 (185, 161, 61):'o',
 (157, 137, 54):'o',
 (125, 110, 48):'o',
+
 (182, 54, 61):'z',
 (192, 69, 76):'z',
 (185, 68, 57):'z',
@@ -101,6 +113,7 @@ tetris_colors = {
 (194, 64, 71):'z',
 (175, 55, 61):'z',
 (180, 52, 59):'z',
+
 (143, 191, 62):'s',
 (129, 173, 57):'s',
 (139, 185, 61):'s',    
@@ -145,7 +158,7 @@ tetris_colors = {
 (165, 62, 155):'t',
 }
 
-
+"""Colores correspondientes a las piezas de tetris."""
 
 def calculate_distance(color1, color2):
     return np.sqrt(np.sum((np.array(color1) - np.array(color2))**2))
