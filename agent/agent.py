@@ -54,6 +54,7 @@ class Agent():
             results = list(executor.map(self.evaluate_move, moves))
 
         for move, score in results:
+            print('movimiento: {}, con puntaje de {}'.format(move, score))
             if score <= best_score:
                 best_score = score
                 best_move = move
