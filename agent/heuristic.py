@@ -1,5 +1,3 @@
-
-
 import numpy as np
 
 class Heuristic:
@@ -25,9 +23,10 @@ class Heuristic:
                 height = len(self.board) - i
                 break
         
+        self.height = height
         return height
 
-    def holes(self):
+    def count_holes(self):
         total_holes = 0
         for col in zip(*self.board):
             block_found = False
@@ -36,6 +35,7 @@ class Heuristic:
                     block_found = True
                 elif block_found:
                     total_holes += 1
+        self.holes = total_holes
         return total_holes
     
     def holes_in_range(self, initial, final):
@@ -65,20 +65,19 @@ class Heuristic:
                 break
         return height
         
-    def calculate_heuristics(self,board,initial,final):
+    def calculate_heuristics(self, board, initial, final):
         self.board = np.copy(board)
         self.max_height_value = self.max_height()
-        height_piece = self.max_height_piece(initial= initial,final= final)
-        holes_piece = self.holes_in_range(initial= initial,final= final)
-        #holes_value = self.holes()
+        height_piece = self.max_height_piece(initial= initial, final= final)
+        holes_piece = self.holes_in_range(initial= initial, final= final)
+        self.count_holes()
     
-
         lines = self.complete_lines()
-        score =  (holes_piece*.75 +  (height_piece)*.35)
+        score =  (holes_piece * .35 +  (height_piece) * .75)
         
         return {
-            'holes':holes_piece,
+            'holes': holes_piece,
             'height': height_piece,
-            'lines':lines,
+            'lines': lines,
             'score': score
         }

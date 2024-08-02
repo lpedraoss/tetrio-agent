@@ -1,207 +1,91 @@
-
+import numpy as np
 import random
 from tetris.pieces import pieces
 from tetris.rotation import checkRotation
-import numpy as np
-from agent.heuristic import Heuristic
-class BaseBoard:
 
+class BaseBoard:
     def __init__(self):
-        self.board = np.zeros((40, 10), dtype=int)
-        self.test_board = np.copy(self.board)
-        self.is_Default_board = False
-        self.checkRotation = checkRotation
-        self.piece = None
-        self.height = None
+        self.board = np.zeros((8, 10), dtype=np.uint8)
         self.current_height = 4
         self.MAX_HEIGHT = 30
-        self.width = None 
-        self.rotations = None  
 
-
-
-    def moveInBoard(self, times=0,initial=2,direction = None,piece = None):
-        if piece == None:
-            width = self.width 
-        else:
-            width = len(piece[0]) 
-        index = 0
-        if direction == None or direction == 'center':
-            index = initial
+    def moveInBoard(self, times=0, initial=2, direction=None, piece=None):
+        width = len(piece[0]) if piece is not None else 0
+        if direction == 'center':
+            return initial
         elif direction == 'left':
-            index = max(
-            0,
-            initial - times,
-            )
+            return max(0, initial - times)
         elif direction == 'right':
-            # Calcular el nuevo valor teniendo en cuenta times
-            index = min(initial + times, 9 - (width-1))
-        return index
- 
-    def detectCollision(self, row=-1, initial=3, column=0,board=None,deeph=[]):
-        #TODO:
-        # aun persiste el error de colision, ahora veo es en o, antes se habia solucionado para las l y j.
-        if self.is_Default_board:
-            board = self.board
-        deep=0
-        if column <= (self.width - 1) and row > (-len(board)+1):
-            index = row -1
-    
-            collision = any(board[i][initial+column] == 1 for i in range(index, -len(board)-1, -1))
-            isPiece = self.piece[self.height-1][column] == 0 and board[row][column+initial] == 1
-            isBoard = self.piece[self.height-1][column]==1 and board[row][column+initial]==0
-            both = self.piece[self.height-1][column] == 0 and board[row][column+initial]==0
-            
-            isHole = isPiece or isBoard or both
+            return min(initial + times, 9 - (width - 1))
+        return initial
 
-            if not collision:
-                for i in range(self.height):
-                    down_peace = self.height-i-1
-                    if self.piece[down_peace][column] == 0:
-                        deep+=1
-                    elif self.piece[down_peace][column] == 1:
-                        break
-                if deep >= 1:
-                    deep-=1
-                deeph.append(deep)
-                if isHole:
-                    row,deeph = self.detectCollision(row=row, initial=initial, column=column + 1,board=board,deeph=deeph)
-                else:
-                    row,deeph = self.detectCollision(row=row-1, initial=initial, column=column,board=board,deeph=deeph)
-            else:
-                row,deeph = self.detectCollision(row=row - 1, initial=initial, column=column,board=board,deeph=[])
-        if max(deeph) ==0 and deeph != []:
-            deeph = []
-            deeph.append(0)
-        return row,deeph
+    def detectCollision(self, row, col, piece):
+        piece_height, piece_width = piece.shape
+        for i in range(piece_height):
+            for j in range(piece_width):
+                if row + i >= self.board.shape[0] or col + j >= self.board.shape[1]:
+                    return True
+                if piece[i, j] and self.board[row + i, col + j]:
+                    return True
+        return False
 
-    def addPiece(self, row=2, column=5,board=None):
-        
-        if self.is_Default_board:
-            board = self.board
-        for i in range(self.height):
-            for j in range(self.width):
-                if self.piece[i][j] == 1:
-                    board[row + i - self.height + 1][column + j] = 1
-        if self.is_Default_board:
-            self.board = np.copy(board)
-        else:
-            self.test_board = np.copy(board)
-    
-            
+    def addPiece(self, row, col, piece):
+        piece_height, piece_width = piece.shape
+        for i in range(piece_height):
+            for j in range(piece_width):
+                if piece[i, j]:
+                    self.board[row + i, col + j] = 1
 
-    def checkLines(self,board=None):
-        if self.is_Default_board:
-            board = self.board
-        # Revisa si alguna fila está completamente llena de 1 y haz "pop"
-        full_rows = [idx for idx, row in enumerate(board) if all(cell == 1 for cell in row)]
-        for full_row in full_rows:
-            self.cleanLine(row = full_row,board = board)
+    def checkLines(self):
+        full_rows = [i for i in range(self.board.shape[0]) if all(self.board[i])]
+        for row in full_rows:
+            self.board = np.delete(self.board, row, axis=0)
+            self.board = np.insert(self.board, 0, np.zeros((1, self.board.shape[1]), dtype=np.uint8), axis=0)
 
-    def cleanLine(self, row,board=None):
-        if self.is_Default_board:
-            board = self.board
+    def increase_height(self, row):
+        if (row - self.current_height) < -self.current_height:
+            increaseToAdd = min(4, self.MAX_HEIGHT - 1 - self.current_height)
+            self.board = np.vstack((np.zeros((increaseToAdd, self.board.shape[1]), dtype=np.uint8), self.board))
+            self.current_height += increaseToAdd
 
-        board = np.delete(board, row, axis=0)
-        new_row = np.zeros((1, board.shape[1]), dtype=int)
-        board = np.insert(board, 0, new_row, axis=0)
-        if self.is_Default_board:
-            self.board = np.copy(board)
-        else:
-            self.test_board = np.copy(board)    
-
-            
-    def increase_height(self, row,board=None):
-            if self.is_Default_board:
-                board = self.board
-            if (row - self.height) < -self.current_height:
-                increaseToAdd = min(4, self.MAX_HEIGHT-1 - self.current_height)
-                increase = np.zeros((increaseToAdd,board.shape[1]),dtype = int)
-                board = np.vstack((increase, board))
-                if self.is_Default_board:
-                    self.board = np.copy(board)
-                else:
-                    self.test_board = np.copy(board)
-                self.current_height += increaseToAdd
-
-    
-    def generateMoves(self,piece,initial=3):
-    
+    def generateMoves(self, piece):
         moves = []
-        pieceToAdd = pieces[piece]
-        #times = (len(self.board[0]))-(initial+self.width-2)
-        self.rotations = len(pieceToAdd)
-        for rot in range(self.rotations):
-            initial = self.checkRotation(piece=piece,rotate=rot)
-            width = len(pieceToAdd[rot])-1
-            timesRight = (len(self.board[0]))-(initial+width)
-            timesLeft = (len(self.board[0]))-(initial)
+        piece_rotations = pieces[piece]
+        for rot, piece_matrix in enumerate(piece_rotations):
+            width = piece_matrix.shape[1]
+            initial_col = 3  # Columna inicial base
             for direction in ['left', 'center', 'right']:
                 if direction == 'center':
-                    t = 0
-                    move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
-                    moves.append((piece, rot, direction, t, move))
+                    moves.append((piece, rot, direction, 0, self.moveInBoard(0, initial_col, direction, piece_matrix)))
                 elif direction == 'right':
-
-                    for t in range(1,timesRight+3):
-                    
-                        move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
-                        moves.append((piece, rot, direction, t, move))
+                    for t in range(1, 10 - width):
+                        moves.append((piece, rot, direction, t, self.moveInBoard(t, initial_col, direction, piece_matrix)))
                 elif direction == 'left':
-                    
-                    for t in range(1,timesLeft+5):
-                        move = self.moveInBoard(times=t, direction=direction,initial=initial,piece=pieceToAdd[rot])
-                        moves.append((piece, rot, direction, t, move))
-        #selected_moves = random.sample(moves,min(len(moves), 5)) esto para generar un número limitado de movimientos
+                    for t in range(1, 10 - width):
+                        moves.append((piece, rot, direction, t, self.moveInBoard(t, initial_col, direction, piece_matrix)))
         return moves
 
-
-    def pressAdd(self, piece,times,rotation,dir,board=None):
-        
-        self.is_Default_board = board is None
-        
-        if self.is_Default_board:
-            board = self.board
-        self.rotations = len(pieces[piece]) 
-        #rotate = self.rotations-2
-        rotate = rotation
-        self.piece = pieces[piece][rotate]
-        self.height = len(self.piece)
-        self.width = len(self.piece[0]) 
-        columnInitial = self.checkRotation(piece=piece,rotate=rotate)
-        #altura heuristica:  {'height': 2, 'holes': 2, 'score': 0.03353920515574651}
-        column = self.moveInBoard(times=times, initial=columnInitial,direction=dir)
-        row,deeph = self.detectCollision(initial=column,board = board)
-        #TODO: se prevee el problema sea aquí
-        
-        if row >= -2:
-            deeph = []
-        if deeph == []:
-            deeph.append(0)
-
-        row+=max(deeph)
-        self.increase_height(row=row,board = board)
-    
-        self.addPiece(row=row, column=column,board=board)
-        
-        self.checkLines(board=board)
+    def pressAdd(self, piece, times, rotation, direction):
+        piece_matrix = pieces[piece][rotation]
+        initial_col = checkRotation(piece=piece, rotate=rotation)  # Columna inicial base
+        col = self.moveInBoard(times, initial_col, direction, piece_matrix)
+        row = 0
+        while row + piece_matrix.shape[0] <= self.board.shape[0] and not self.detectCollision(row, col, piece_matrix):
+            row += 1
+        row -= 1
+        self.increase_height(row)
+        self.addPiece(row, col, piece_matrix)
+        self.checkLines()
 
     def showBoard(self):
         print('--------------------BOARD----------------------')
-        if self.is_Default_board:
-            for i in self.board:
-                print(i)
-                
+        for row in self.board:
+            print(''.join(['#' if cell else '.' for cell in row]))
+
     def copy(self):
-        """Create a copy to test moves"""
-        test_board = BaseBoard()
-        test_board.board = np.copy(self.board)
-        test_board.test_board = np.copy(self.test_board)
-        test_board.is_Default_board = self.is_Default_board
-        test_board.piece = np.copy(self.piece) if self.piece is not None else None
-        test_board.height = self.height
-        test_board.current_height = self.current_height
-        test_board.MAX_HEIGHT = self.MAX_HEIGHT
-        test_board.width = self.width
-        test_board.rotations = self.rotations
-        return test_board
+        new_board = BaseBoard()
+        new_board.board = np.copy(self.board)
+        new_board.current_height = self.current_height
+        new_board.MAX_HEIGHT = self.MAX_HEIGHT
+        return new_board
+

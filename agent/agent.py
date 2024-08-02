@@ -5,6 +5,8 @@ from tetris.pieces import pieces
 from tetris.rotation import checkRotation
 import numpy as np
 from agent.heuristic import Heuristic
+from concurrent.futures import ThreadPoolExecutor
+
 class Agent():
     """
     Represents an agent that plays the Tetris game.
@@ -18,6 +20,24 @@ class Agent():
         self.baseBoard = BaseBoard()
         self.heuristic = Heuristic()
 
+    def evaluate_move(self, move):
+        """
+        Evaluates a single move.
+
+        Args:
+            move (tuple): A move to evaluate.
+
+        Returns:
+            tuple: The move and its score.
+        """
+        testing = self.baseBoard.copy()
+        piece, rot, direction, t, move_column = move
+        initial = move_column
+        final = move_column + len(pieces[piece][rot][0]) - 1
+        testing.pressAdd(piece=piece, times=t, rotation=rot, direction=direction)
+        score = self.heuristic.calculate_heuristics(board=testing.board, initial=initial, final=final)['score']
+        return move, score
+
     def selectBestMove(self, moves):
         """
         Selects the best move from a list of possible moves.
@@ -30,23 +50,19 @@ class Agent():
         """
         best_move = None
         best_score = float('inf')
-        
-        for move in moves:
-            # Crear una copia del tablero para probar movimientos
-            testing = self.baseBoard.copy()
-            piece, rot, direction, t, move_column = move
-            initial = move_column
-            final = move_column + len(pieces[piece][rot][0]) - 1
-            testing.pressAdd( piece = piece,times = t,rotation = rot,dir = direction,board = testing.board )
-            score = self.heuristic.calculate_heuristics( board = testing.board,initial = initial,final = final )['score']
-            print(f"Evaluating move {move}: score {score}")  # Agregar línea de depuración
+
+        with ThreadPoolExecutor() as executor:
+            results = list(executor.map(self.evaluate_move, moves))
+
+        for move, score in results:
             if score <= best_score:
                 best_score = score
                 best_move = move
+
         print(f"Selected best move: {best_move} with score {best_score}")
         return best_move
 
-    def predictMove(self,piece):
+    def predictMove(self, piece):
         """
         Predicts the best move for a given piece.
 
@@ -58,17 +74,14 @@ class Agent():
         """
         moves = self.baseBoard.generateMoves(piece=piece)    
         best_move = self.selectBestMove(moves=moves)
-        #index = random.randint(0, len(moves) - 1)
-        #best_move = moves[index]
-        #best_move = moves[4]
         return best_move
 
-    def startGame(self,piece):
+    def startGame(self, piece):
         """
         Starts the game and makes the best move for the given piece.
 
         Args:
-            piece(str) The piece to make the move for.
+            piece (str): The piece to make the move for.
 
         Returns:
             tuple: The best move as a tuple of (piece, rot, direction, t, move_column).
@@ -76,15 +89,8 @@ class Agent():
         move = self.predictMove(piece=piece)
         piece, rot, direction, t, move_column = move
         # Realizar la jugada
-        
-        self.baseBoard.pressAdd(piece=piece, rotation=rot, dir=direction, times=t)
+        self.baseBoard.pressAdd(piece=piece, rotation=rot, direction=direction, times=t)
         
         print('La mejor jugada es:', move)           
         self.baseBoard.showBoard()
-        #heuristic =  Heuristic()
-        #heur = heuristic.calculate_heuristics(board=self.baseBoard.board,initial=move_column,final=move_column+(len(pieces[piece][rot])-1))
-        #print('heuristica: ',heur)
-
-        print(len(self.baseBoard.board))
         return move
-
