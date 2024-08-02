@@ -1,5 +1,4 @@
-import random
-import time
+
 from agent.base_board import BaseBoard
 from tetris.pieces import pieces
 from tetris.rotation import checkRotation

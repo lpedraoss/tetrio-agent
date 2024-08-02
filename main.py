@@ -115,9 +115,9 @@ def startGameTest():
     
 def main():
 
-    #tetrisCLI()
-    startGameTest()
-    pressAddTest()
+    tetrisCLI()
+    #startGameTest()
+    #pressAddTest()
     
 if __name__ == "__main__":
     main()
