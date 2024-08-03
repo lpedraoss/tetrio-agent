@@ -2,9 +2,9 @@ import time
 import pyautogui
 import pyscreeze
 from queue import Queue
-from tetris.predictor_colors import find_colors_tetris_piece
-from agent.agent import Agent
-from tetris.pixel import pixels
+from core.tetris.predictor_colors import find_colors_tetris_piece
+from core.agent.agent import Agent
+from core.tetris.pixel import pixels
 
 class TetrioBot():
     def __init__(self) -> None:

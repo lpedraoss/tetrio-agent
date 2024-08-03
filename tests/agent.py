@@ -1,7 +1,7 @@
 import unittest
-from agent.base_board import BaseBoard
-from agent.heuristic import Heuristic
-from agent.agent import Agent
+from  core.agent.base_board import BaseBoard
+from core.agent.heuristic import Heuristic
+from core.agent.agent import Agent
 import numpy as np
 
 class TestAgent(unittest.TestCase):

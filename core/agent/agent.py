@@ -1,9 +1,9 @@
 
-from agent.base_board import BaseBoard
-from tetris.pieces import pieces
-from tetris.rotation import checkRotation
+from core.agent.base_board import BaseBoard
+from core.tetris.pieces import pieces
+from core.tetris.rotation import checkRotation
 import numpy as np
-from agent.heuristic import Heuristic
+from core.agent.heuristic import Heuristic
 from concurrent.futures import ThreadPoolExecutor
 
 class Agent():
@@ -54,6 +54,7 @@ class Agent():
             results = list(executor.map(self.evaluate_move, moves))
 
         for move, score in results:
+            print('movimiento: {}, con puntaje de {}'.format(move, score))
             if score <= best_score:
                 best_score = score
                 best_move = move

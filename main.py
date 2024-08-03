@@ -1,86 +1,17 @@
+from logging import root
 import os
-
+import tkinter as tk
 import readline
-from agent.agent import Agent
-from agent.base_board import BaseBoard
-from agent.tetrio_bot import TetrioBot
-from tetris.predictor_colors import load_models_torch
+from tkinter import messagebox
+from cli.cli_main import start_cli
+from core.agent.agent import Agent
+from core.agent.base_board import BaseBoard
+from core.agent.tetrio_bot import TetrioBot
+from core.tetris.predictor_colors import load_models_torch
+import sys
 
-# Variable para rastrear el estado de los modelos
-models_loaded = False
-# Definir los comandos disponibles
-commands = ['load', 'start', 'help', 'exit']
-def clear_console():
-    """Limpia la consola basada en el sistema operativo."""
-    os.system('cls' if os.name == 'nt' else 'clear')
+from gui.gui_main import start_gui
 
-def load_models():
-    global models_loaded
-    clear_console()
-    print('<-------------------------------->')
-    print("Loading models...")
-    load_models_torch()
-    models_loaded = True
-    print('<-------------------------------->')
-    print("Models loaded successfully!")
-    print('<-------------------------------->')
-
-def play_game():
-    if not models_loaded:
-        clear_console()
-        print("Error: Models need to be loaded before starting the game.")
-        print('<-------------------------------->')
-        return
-    else:
-        clear_console()
-        print("Starting the game...")
-        print('<-------------------------------->')
-        bot = TetrioBot()
-        bot.play()
-
-
-
-def completer(text, state):
-    options = [cmd for cmd in commands if cmd.startswith(text)]
-    if state < len(options):
-        return options[state]
-    else:
-        return None
-def tetrisCLI():
-    readline.set_completer(completer)
-    readline.parse_and_bind('tab: complete')
-    
-    clear_console()
-    print("Tetris Bot CLI - Type 'help' for a list of commands.")
-
-    while True:
-        try:
-            # Mostrar el prompt de entrada
-            command = input("> ").strip().lower()
-
-            if command == 'load':
-                load_models()
-                print("Models loaded successfully.")
-            elif command == 'start':
-                play_game()
-            elif command == 'help' or command == "?":
-                clear_console()
-                print("Available commands:")
-                print("  load       - Load the models")
-                print("  start      - Start the game (models must be loaded first)")
-                print("  exit       - Exit the program")
-            elif command == 'exit':
-                confirm = input("Are you sure you want to exit? (y/n): ").strip().lower()
-                if confirm == 'y':
-                    clear_console()
-                    print("Exiting...")
-                    break
-            else:
-                clear_console()
-                print(f"Unknown command: '{command}'. Type 'help' for a list of commands.")
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            
 def pressAddTest():
     print('<----- verificando resultado con pressAdd ------>')
     tet = BaseBoard()
@@ -112,12 +43,20 @@ def startGameTest():
     tet.startGame(piece ='o')
     print('<----- verificando resultado con startGame ------>')
 
-    
-def main():
 
-    tetrisCLI()
-    #startGameTest()
-    #pressAddTest()
-    
+
+
+def main():
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'cli':
+            start_cli()
+        elif sys.argv[1] == 'gui':
+            start_gui()
+        else:
+            print("Usage: python main.py [cli|gui]")
+    else:
+        print("Usage: python main.py [cli|gui]")
+
 if __name__ == "__main__":
-    main()
+    main()    
+

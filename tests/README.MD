@@ -1,0 +1,2 @@
+ - python -m unittest -v tests.board
+ - python -m unittest -v tests.agent

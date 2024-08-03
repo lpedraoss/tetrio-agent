@@ -1,11 +1,11 @@
 import numpy as np
 import random
-from tetris.pieces import pieces
-from tetris.rotation import checkRotation
+from core.tetris.pieces import pieces
+from core.tetris.rotation import checkRotation
 
 class BaseBoard:
     def __init__(self):
-        self.board = np.zeros((40, 10), dtype=np.uint8)
+        self.board = np.zeros((30, 10), dtype=np.uint8)
         self.current_height = 4
         self.MAX_HEIGHT = 30
 

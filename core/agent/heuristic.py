@@ -15,21 +15,22 @@ class Heuristic:
         return {'score': score, 'holes': holes, 'height': height, 'cleared_lines': cleared_lines}
 
     def count_holes(self, board):
+        # Count holes in each column
         holes = 0
         for col in range(board.shape[1]):
-            block_found = False
-            for row in range(board.shape[0]):
-                if board[row, col] == 1:
-                    block_found = True
-                elif block_found and board[row, col] == 0:
-                    holes += 1
+            column = board[:, col]
+            first_block_idx = np.argmax(column)  # Index of the first non-zero block
+            if column[first_block_idx] == 1:
+                holes += np.sum(column[first_block_idx + 1:] == 0)
         return holes
 
     def calculate_height(self, board):
-        for row in range(board.shape[0]):
-            if np.any(board[row]):
-                return board.shape[0] - row
+        # Find the first row from the top that has any blocks
+        row_indices = np.where(board.any(axis=1))[0]
+        if row_indices.size > 0:
+            return board.shape[0] - row_indices[0]
         return 0
 
     def count_cleared_lines(self, board):
+        # Count how many rows are completely filled with blocks
         return np.sum(np.all(board, axis=1))
