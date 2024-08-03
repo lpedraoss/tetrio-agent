@@ -5,13 +5,15 @@ class Heuristic:
         self.hole_penalty = 10
         self.height_penalty = 5
         self.line_bonus = 100
+        self.height_threshold = 15
+        self.extra_height_penalty = 50  # Penalización adicional si la altura es mayor a 15
 
     def calculate_heuristics(self, board, initial, final):
         holes = self.count_holes(board)
-        height = self.calculate_height(board)
+        height, extra_penalty = self.calculate_height(board)
         cleared_lines = self.count_cleared_lines(board)
         
-        score = (holes * self.hole_penalty) + (height * self.height_penalty) - (cleared_lines * self.line_bonus)
+        score = (holes * self.hole_penalty) + (height * self.height_penalty) + extra_penalty - (cleared_lines * self.line_bonus)
         return {'score': score, 'holes': holes, 'height': height, 'cleared_lines': cleared_lines}
 
     def count_holes(self, board):
@@ -28,8 +30,12 @@ class Heuristic:
         # Find the first row from the top that has any blocks
         row_indices = np.where(board.any(axis=1))[0]
         if row_indices.size > 0:
-            return board.shape[0] - row_indices[0]
-        return 0
+            height = board.shape[0] - row_indices[0]
+            extra_penalty = 0
+            if height > self.height_threshold:
+                extra_penalty = (height - self.height_threshold) * self.extra_height_penalty
+            return height, extra_penalty
+        return 0, 0
 
     def count_cleared_lines(self, board):
         # Count how many rows are completely filled with blocks
