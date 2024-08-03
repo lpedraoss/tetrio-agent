@@ -1,5 +1,6 @@
 # tetrio-agent
-
+**Autor:** Luis Alfonso Pedraos Suarez
+**Grupo:** "sin grupo"
 Este es un bot diseñado para jugar Tetrio.
 
 ## Descripción
