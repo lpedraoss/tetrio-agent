@@ -1,7 +1,7 @@
 import numpy as np
 import random
-from tetris.pieces import pieces
-from tetris.rotation import checkRotation
+from core.tetris.pieces import pieces
+from core.tetris.rotation import checkRotation
 
 class BaseBoard:
     def __init__(self):
