@@ -54,12 +54,12 @@ class Agent():
             results = list(executor.map(self.evaluate_move, moves))
 
         for move, score in results:
-            print('movimiento: {}, con puntaje de {}'.format(move, score))
+            #print('movimiento: {}, con puntaje de {}'.format(move, score))
             if score <= best_score:
                 best_score = score
                 best_move = move
 
-        print(f"Selected best move: {best_move} with score {best_score}")
+        #print(f"Selected best move: {best_move} with score {best_score}")
         return best_move
 
     def predictMove(self, piece):
@@ -91,6 +91,9 @@ class Agent():
         # Realizar la jugada
         self.baseBoard.pressAdd(piece=piece, rotation=rot, direction=direction, times=t)
         
-        print('La mejor jugada es:', move)           
-        self.baseBoard.showBoard()
+        # Actualizar el puntaje actual en la heurística
+        self.heuristic.current_score += self.heuristic.calculate_heuristics(self.baseBoard.board, move_column, move_column + len(pieces[piece][rot][0]) - 1)['cleared_lines'] * self.heuristic.line_bonus
+        
+        #print('La mejor jugada es:', move)           
+        #self.baseBoard.showBoard()
         return move
