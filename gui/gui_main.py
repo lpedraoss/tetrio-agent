@@ -11,7 +11,7 @@ from common.message import Message
 # Variable para rastrear el estado de los modelos
 models_loaded = False
 bot_running = False
-bot = None
+bot = TetrioBot()
 mssg = Message()
 
 def clear_console():
@@ -45,7 +45,6 @@ def play_game():
         clear_console()
         print(mssg.start_game)
         print('<-------------------------------->')
-        bot = TetrioBot()
         bot_running = True
         # Cambiar el color del círculo a rojo
         canvas.itemconfig(circle, fill='red')

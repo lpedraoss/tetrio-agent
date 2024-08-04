@@ -12,7 +12,7 @@ from queue import Queue
 from core.tetris.predictor_colors import find_colors_tetris_piece
 from core.agent.agent import Agent
 from core.tetris.pixel import pixels
-
+interval = .01
 class TetrioBot():
     def __init__(self) -> None:
         self.agent = Agent()
@@ -39,11 +39,9 @@ class TetrioBot():
         dir (str): La dirección en la que mover la pieza ('left', 'right', 'center').
         times (int): El número de veces que mover la pieza en la dirección especificada.
         """
-        if dir != 'center':
-            for _ in range(times):
-                pyautogui.press(dir)
-                time.sleep(0.005)  # Reducir el tiempo de espera
-    
+        if dir != 'center' and times > 0:
+            pyautogui.press(dir, presses=times, interval=0.01)  # Usar presses para múltiples pulsaciones
+        
     def rota(self, times):
         """
         Rota la pieza un número determinado de veces.
@@ -51,9 +49,8 @@ class TetrioBot():
         Args:
         times (int): El número de veces que rotar la pieza.
         """
-        for _ in range(times):
-            pyautogui.press('x')
-            time.sleep(0.005)  # Reducir el tiempo de espera
+        if times > 0:
+            pyautogui.press('x', presses=times, interval=0.01)  # Usar presses para múltiples pulsaciones
     
     def moveInBoard(self, dir, times, rotation):
         """
@@ -66,7 +63,7 @@ class TetrioBot():
         """
         self.rota(times=rotation)
         self.moveDir(times=times, dir=dir)
-        time.sleep(0.005)  # Reducir el tiempo de espera
+        #time.sleep(0.005)  # Reducir el tiempo de espera
     
     def capturePieceColors(self):
         """
@@ -83,11 +80,6 @@ class TetrioBot():
         for color in colors:
             piece = find_colors_tetris_piece(color)
             pieces.append(piece)
-            time.sleep(0.005)  # Reducir el tiempo de espera
-        
-        for i, color in enumerate(colors):
-            print(f'color detectado: {color} ==> {pieces[i]}')
-        
         return pieces
 
     def play(self):
@@ -100,39 +92,34 @@ class TetrioBot():
             initial_pieces = self.capturePieceColors()
             for piece in initial_pieces:
                 self.queue.put(piece)
-                time.sleep(0.005)  # Reducir el tiempo de espera
-            
-            while self.running:
+    
+            while self.running is True:
                 # Check if a new piece has appeared on the board by detecting a color change
                 current_pixel_color = pyscreeze.pixel(self.board_pixel_x, self.board_pixel_y)
                 if current_pixel_color != self.color_board:
-                    time.sleep(0.005)  # Reducir el tiempo de espera
                     piece = self.queue.get()
-                    time.sleep(0.005)  # Reducir el tiempo de espera
                     move = self.agent.startGame(piece=piece)
                     piece, rot, direction, t, move_column = move
                     self.moveInBoard(dir=direction, rotation=rot, times=t)
-                    print('{*********************************}')
-                    print('pieza a jugar: {}'.format(piece))
-                    print('{*********************************}')
-                    while True:
+                    #print('{*********************************}')
+                    #print('pieza a jugar: {}'.format(piece))
+                    #print('{*********************************}')
+                    while self.running is True:
                         # Capture the color of the new piece and add it to the queue
                         new_piece_color = pyscreeze.pixel(self.x5, self.y5)
-                        print('color nuevo: ', new_piece_color)
+                        #print('color nuevo: ', new_piece_color)
                         
                         new_piece = find_colors_tetris_piece(new_piece_color)
                         if new_piece != "board":
                             break
                     self.queue.put(new_piece)
-                    print('<----------------------------->')
+                    """print('<----------------------------->')
                     print('captura el color')
                     print('pieza a añadir', new_piece)
-                    print('<----------------------------->')
+                    print('<----------------------------->')"""
                     
                     pyautogui.press('space')
-                
-                # Small delay to avoid high CPU usage
-                time.sleep(0.005)  # Reducir el tiempo de espera
+        
         except Exception as e:
             print(f"Error: {e}")
 
