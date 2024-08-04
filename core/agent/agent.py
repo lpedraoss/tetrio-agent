@@ -91,6 +91,9 @@ class Agent():
         # Realizar la jugada
         self.baseBoard.pressAdd(piece=piece, rotation=rot, direction=direction, times=t)
         
+        # Actualizar el puntaje actual en la heurística
+        self.heuristic.current_score += self.heuristic.calculate_heuristics(self.baseBoard.board, move_column, move_column + len(pieces[piece][rot][0]) - 1)['cleared_lines'] * self.heuristic.line_bonus
+        
         print('La mejor jugada es:', move)           
         self.baseBoard.showBoard()
         return move

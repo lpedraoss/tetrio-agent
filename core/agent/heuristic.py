@@ -7,11 +7,18 @@ class Heuristic:
         self.line_bonus = 100
         self.height_threshold = 15
         self.extra_height_penalty = 50  # Penalización adicional si la altura es mayor a 15
+        self.current_score = 0  # Puntaje actual
 
     def calculate_heuristics(self, board, initial, final):
         holes = self.count_holes(board)
         height, extra_penalty = self.calculate_height(board)
         cleared_lines = self.count_cleared_lines(board)
+        
+        # Ajustar penalizaciones y bonificaciones si el puntaje está cerca de 35
+        if self.current_score >= 35:
+            self.hole_penalty = 5
+            self.height_penalty = 2
+            self.line_bonus = 200
         
         score = (holes * self.hole_penalty) + (height * self.height_penalty) + extra_penalty - (cleared_lines * self.line_bonus)
         return {'score': score, 'holes': holes, 'height': height, 'cleared_lines': cleared_lines}
