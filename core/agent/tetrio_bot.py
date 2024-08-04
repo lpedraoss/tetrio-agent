@@ -5,11 +5,19 @@ from queue import Queue
 from core.tetris.predictor_colors import find_colors_tetris_piece
 from core.agent.agent import Agent
 from core.tetris.pixel import pixels
+import time
+import pyautogui
+import pyscreeze
+from queue import Queue
+from core.tetris.predictor_colors import find_colors_tetris_piece
+from core.agent.agent import Agent
+from core.tetris.pixel import pixels
 
 class TetrioBot():
     def __init__(self) -> None:
         self.agent = Agent()
         self.queue = Queue()
+        self.running = False  # Añadir un flag para controlar la ejecución
         
         # Initialize pixel positions
         self.x1, self.y1 = pixels[1]
@@ -86,6 +94,7 @@ class TetrioBot():
         """
         Inicia el juego y controla las piezas basándose en los colores capturados.
         """
+        self.running = True  # Establecer el flag a True cuando el bot comienza a jugar
         try:
             # Capture initial piece colors
             initial_pieces = self.capturePieceColors()
@@ -93,7 +102,7 @@ class TetrioBot():
                 self.queue.put(piece)
                 time.sleep(0.005)  # Reducir el tiempo de espera
             
-            while True:
+            while self.running:
                 # Check if a new piece has appeared on the board by detecting a color change
                 current_pixel_color = pyscreeze.pixel(self.board_pixel_x, self.board_pixel_y)
                 if current_pixel_color != self.color_board:
@@ -126,3 +135,9 @@ class TetrioBot():
                 time.sleep(0.005)  # Reducir el tiempo de espera
         except Exception as e:
             print(f"Error: {e}")
+
+    def stop(self):
+        """
+        Detiene la ejecución del bot.
+        """
+        self.running = False  # Establecer el flag a False para detener el bucle

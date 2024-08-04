@@ -53,17 +53,18 @@ def play_game():
         bot.play()
 
 
-"""def stop_game():
+def stop_game():
     global bot_running, bot
     if bot_running and bot:
         bot_running = False
+        # Cambiar el color del círculo a gris
+        canvas.itemconfig(circle, fill='grey')
+        messagebox.showinfo(title = mssg.do_stop_game , message = mssg.stop_game)
         bot.stop()  # Asegúrate de que TetrioBot tenga un método stop
         clear_console()
         print(mssg.stop_game)
         print('<-------------------------------->')
-        # Cambiar el color del círculo a gris
-        canvas.itemconfig(circle, fill='grey')
-        messagebox.showinfo(title = mssg.do_stop_game , message = mssg.stop_game)"""
+    
 
 
 def show_help():
@@ -108,10 +109,12 @@ def start_gui():
     # Crear botones
     load_button = tk.Button(root, text=mssg.do_load_models, command=load_models)
     start_button = tk.Button(root, text=mssg.do_start_game, command=play_game)
+    stop_button = tk.Button(root, text=mssg.do_stop_game, command=stop_game)
 
     # Colocar los botones en la ventana
     load_button.pack(pady=10)
     start_button.pack(pady=10)
+    stop_button.pack(pady=10)
 
     # Ejecutar el bucle principal de tkinter
     root.mainloop()
