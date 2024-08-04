@@ -20,6 +20,7 @@ class BaseBoard:
         return initial
 
     def detectCollision(self, row, col, piece):
+        """Detect if a piece collides with the board"""
         piece_height, piece_width = piece.shape
         for i in range(piece_height):
             for j in range(piece_width):

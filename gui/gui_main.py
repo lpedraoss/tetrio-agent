@@ -30,8 +30,17 @@ def load_models():
     print('<-------------------------------->')
     # Cambiar el color del círculo a verde
     canvas.itemconfig(circle, fill='green')
-    messagebox.showinfo(title= mssg.do_load_models, message = mssg.success_models)
+    #messagebox.showinfo(title= mssg.do_load_models, message = mssg.success_models)
 
+def update_header_image(image_path):
+    """Actualiza la imagen del header."""
+    global header_image
+    image = Image.open(image_path)
+    image = image.resize((50, 50), Image.LANCZOS)
+    header_image = ImageTk.PhotoImage(image)
+    header_label.config(image=header_image)
+    header_label.image = header_image  # Mantener una referencia de la imagen
+    root.update_idletasks()  # Forzar la actualización de la GUI
 
 def play_game():
     global bot_running, bot
@@ -48,9 +57,9 @@ def play_game():
         bot_running = True
         # Cambiar el color del círculo a rojo
         canvas.itemconfig(circle, fill='red')
-        messagebox.showinfo(title = mssg.do_start_game , message = mssg.start_game)
+        #messagebox.showinfo(title = mssg.do_start_game , message = mssg.start_game)
+        update_header_image("./assets/bot1.png")  # Cambiar la imagen del header
         bot.play()
-
 
 def stop_game():
     global bot_running, bot
@@ -59,12 +68,11 @@ def stop_game():
         # Cambiar el color del círculo a gris
         canvas.itemconfig(circle, fill='grey')
         messagebox.showinfo(title = mssg.do_stop_game , message = mssg.stop_game)
+        update_header_image("./assets/bot2.png")  # Cambiar la imagen del header
         bot.stop()  # Asegúrate de que TetrioBot tenga un método stop
         clear_console()
         print(mssg.stop_game)
         print('<-------------------------------->')
-    
-
 
 def show_help():
     messagebox.showinfo(title = mssg.do_help,message = mssg.help)
@@ -75,7 +83,7 @@ def exit_program():
         root.destroy()
 
 def start_gui():
-    global root, canvas, circle
+    global root, canvas, circle, header_label, header_image
     # Crear la ventana principal
     root = tk.Tk()
     root.title(mssg.name_tetris + mssg.GUI)
@@ -89,26 +97,30 @@ def start_gui():
     # Mantener la ventana siempre en primer plano
     root.attributes("-topmost", True)
 
+    # Establecer el fondo de la ventana en modo oscuro
+    root.configure(bg='black')
+
     # Cargar y redimensionar la imagen
-    image = Image.open("./assets/bot.png")  # Reemplaza con la ruta de tu imagen
+    image = Image.open("./assets/bot2.png")  # Reemplaza con la ruta de tu imagen
     image = image.resize((50, 50), Image.LANCZOS)  # Ajustar el tamaño de la imagen
     header_image = ImageTk.PhotoImage(image)
 
     # Crear un Label para la imagen del header
-    header_label = tk.Label(root, image=header_image)
+    header_label = tk.Label(root, image=header_image, bg='black')
     header_label.image = header_image  # Mantener una referencia de la imagen
     header_label.pack(side="bottom", fill="x")
     
     # Crear un Canvas para el círculo
-    canvas = tk.Canvas(root, width=50, height=50)
+    canvas = tk.Canvas(root, width=50, height=50, bg='black', highlightthickness=0)
     canvas.pack(pady=20)
     # Dibujar un círculo gris
     circle = canvas.create_oval(10, 10, 40, 40, fill='grey')
 
-    # Crear botones
-    load_button = tk.Button(root, text=mssg.do_load_models, command=load_models)
-    start_button = tk.Button(root, text=mssg.do_start_game, command=play_game)
-    stop_button = tk.Button(root, text=mssg.do_stop_game, command=stop_game)
+    # Crear botones con fondo oscuro y texto claro
+    button_style = {'bg': 'black', 'fg': 'white', 'activebackground': 'grey', 'activeforeground': 'white'}
+    load_button = tk.Button(root, text=mssg.do_load_models, command=load_models, **button_style)
+    start_button = tk.Button(root, text=mssg.do_start_game, command=play_game, **button_style)
+    stop_button = tk.Button(root, text=mssg.do_stop_game, command=stop_game, **button_style)
 
     # Colocar los botones en la ventana
     load_button.pack(pady=10)
@@ -117,4 +129,3 @@ def start_gui():
 
     # Ejecutar el bucle principal de tkinter
     root.mainloop()
-
