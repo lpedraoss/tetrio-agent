@@ -40,7 +40,7 @@ class TetrioBot():
         times (int): El número de veces que mover la pieza en la dirección especificada.
         """
         if dir != 'center' and times > 0:
-            pyautogui.press(dir, presses=times, interval=0.01)  # Usar presses para múltiples pulsaciones
+            pyautogui.press(dir, presses=times)  # Usar presses para múltiples pulsaciones
         
     def rota(self, times):
         """
@@ -50,7 +50,7 @@ class TetrioBot():
         times (int): El número de veces que rotar la pieza.
         """
         if times > 0:
-            pyautogui.press('x', presses=times, interval=0.01)  # Usar presses para múltiples pulsaciones
+            pyautogui.press('x', presses=times)  # Usar presses para múltiples pulsaciones
     
     def moveInBoard(self, dir, times, rotation):
         """
