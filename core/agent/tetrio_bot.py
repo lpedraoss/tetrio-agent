@@ -3,7 +3,7 @@ import pyscreeze
 from queue import Queue
 from core.tetris.predictor_colors import find_colors_tetris_piece
 from core.agent.agent import Agent
-
+from core.tetris.pixel import pixels
 class TetrioBot():
     def __init__(self) -> None:
         self.agent = Agent()
@@ -15,13 +15,7 @@ class TetrioBot():
         self.original_height = 768
 
         # Coordenadas originales
-        self.pixels = {
-            1: (937, 157),
-            2: (946, 257),
-            3: (952, 355), 
-            4: (943, 451),
-            5: (945, 544)
-        }
+        self.pixels = pixels
 
         # Obtener la resolución actual de la pantalla
         screen_width, screen_height = pyautogui.size()
